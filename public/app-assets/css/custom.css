@@ -1,90 +1,255 @@
-.team1 {
-    border: 1px solid black;
-    border-top-right-radius: 30px;
-    border-bottom-right-radius: 30px;
-    background-image: linear-gradient(to left, rgba(255, 0, 0, 0), rgb(250, 114, 3));
+@import url('https://fonts.googleapis.com/css2?family=Urbanist&display=swap');
+
+body {
+    font-family: 'Urbanist', sans-serif;
 }
 
-.team1 h6 {
-    font-weight: bold;
+div.dataTables_wrapper .dataTables_info {
+    padding-top: 0.7rem !important;
 }
 
-.main-scoreboard {
-    border: 1px solid rgb(253, 250, 250);
-    background-color: rgb(41, 49, 51);
-    box-shadow: 0 4px 10px 2px rgba(0, 0, 0, 0.5);
+.card-header {
+    border-bottom: 1px solid gray;
 }
 
-.player1,
-.player2 {
-    font-weight: bold;
-    margin-top: 10px;
-    color: white;
+.dataTables_wrapper {
+    padding: 10px !important;
 }
 
-.player1 span,
-.player2 span {
-    font-weight: normal;
-    font-size: 12px;
-}
-
-.inner-scoreboard {
-    background-color: rgb(250, 250, 249);
-    border: 1px solid rgb(41, 49, 51);
-}
-
-#playing_team_name,
-#playing_team_score,
-#playing_team_out {
-    font-weight: bold;
-    font-size: 17px;
-}
-
-#running_over,
-#total_overs {
-    font-weight: bold;
-    font-size: 10px;
-}
-
-.score-need {
-    background-color: rgb(254, 129, 4);
-    border: 1px solid rgb(41, 49, 51);
-}
-
-.score-need p {
-    font-size: 12px;
-    color: black;
-    margin-top: 5px;
-    margin-bottom: 0px;
-}
-
-.extras {
-    color: rgb(253, 252, 252);
-    font-size: 10px;
-}
-
-.extras .row {
+a {
+    color: #003B69;
+    font-weight: 500;
     font-size: 15px;
+    line-height: 22px;
 }
 
-.bowler-info {
-    color: rgb(253, 252, 252);
+a:hover , .breadcrumb-item.active {
+    color: #E21838;
+}
+
+.card_label {
+    font-weight: 400;
     font-size: 12px;
-    margin-top: 10px;
-    font-weight: bold;
+    line-height: 22px;
+    color: #5A5A5A;
 }
 
-.bowler-info span {
+.card_title {
+    font-weight: 700;
+    padding:0px;
+    font-size: 16px;
+    line-height: 22px;
+    color: #252525;
+}
+
+.main_label {
+    font-weight: 600;
+    font-size: 20px;
+    /* line-height: 22px; */
+    color: #004F8C;
+}
+
+.medicine {
+    font-weight: 600;
+    font-size: 16px;
+    line-height: 22px;
+    color: #191919;
+}
+
+.medicine_qty {
+    font-weight: 400;
+    font-size: 12px;
+    line-height: 22px;
+    color: #191919;
+    padding-left: 20px;
+}
+
+.checkup_time {
+    font-weight: 500;
+    font-size: 14px;
+    line-height: 22px;
+    color: #191919;
+}
+
+.history_type {
+    font-weight: 600;
+    font-size: 14px;
+    line-height: 22px;
+    color: #191919;
+}
+
+.history_type_value {
+    font-weight: 500;
+    font-size: 14px;
+    line-height: 22px;
+    color: #191919;
+}
+.main-menu.menu-light .navigation > li.active > a {
+    background: #262895 !important;
+    box-shadow: none;
+
+}
+
+/* .main-menu.menu-light .navigation li {
+    border: 1px solid #99B9D1;
+    border-radius: 0.6rem;
+    margin: 1rem;
+}
+
+.main-menu.menu-light .navigation li a,
+.main-menu.menu-light .navigation>li.open:not(.menu-item-closing)>a {
+    color: #CCDCE8;
+    font-size: 12px;
+    margin-left: 0px;
+    border-radius: 10px;
+    line-height: 20.93px;
+    font-weight: 500;
+    background-color: #004F8C;
+}
+
+.main-menu.menu-light .navigation>li.active>a {
+    background: #004F8C !important;
+    box-shadow: none !important;
+    color: #CCDCE8;
+    font-size: 12px;
+    border-radius: 10px;
+    margin-left: 0px;
+    line-height: 20.93px;
+    font-weight: 500;
+}
+
+.main-menu.menu-light .navigation>li.active {
+    box-shadow: 0 0 10px 1px rgba(255, 255, 255, 0.7) !important;
+} */
+
+/* .vertical-layout.vertical-menu-modern.menu-expanded .main-menu .navigation li:after {
+    content: '';
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23CCDCE8' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' class='feather feather-chevron-right'%3E%3Cpolyline points='9 18 15 12 9 6'%3E%3C/polyline%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: 1.1rem;
+    height: 1.1rem;
+    width: 1.1rem;
+    display: inline-block;
+    position: absolute;
+    right: 20px;
+    top: 14px;
+    transform: rotate(0deg);
+    transition: all 0.2s ease-out;
+    color: #003B69 !important;
+} */
+
+.table:not(.table-dark):not(.table-light) thead:not(.table-dark) th {
+    background-color: #262895;
     color: white;
 }
 
-.team2 {
-    border: 1px solid rgb(74, 74, 74);
-    border-top-left-radius: 30px;
-    border-bottom-left-radius: 30px;
-    background-image: linear-gradient(to right, rgba(255, 0, 0, 0), rgb(0, 247, 255));
+div.dataTables_wrapper .dataTables_info, 
+div.dataTables_wrapper div.dataTables_length label,
+div.dataTables_wrapper div.dataTables_length select,
+div.dataTables_wrapper div.dataTables_filter label, 
+.card .card-header .card-title, html .content .content-wrapper .content-header-title, 
+label, .mb-0,
+.btn-outline-secondary , 
+.list-group .list-group-item, 
+.dropdown-menu .dropdown-item 
+    {
+    color: #003B69 !important;
 }
 
-.team2 h6 {
-    font-weight: bold;
+.form-select, .form-control, .input-group:not(.has-validation) > :not(:last-child):not(.dropdown-toggle):not(.dropdown-menu), .input-group:not(.has-validation) > .dropdown-toggle:nth-last-child(n + 3)
+,.btn-outline-secondary,.input-group-text   {
+    border: 1px solid #003B69 !important;
 }
+.form-select{
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23003B69' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' class='feather feather-something'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+}
+
+.page-item.disabled .page-link
+    {
+    color: #262895;
+    background-color: #CCDCE8;
+}
+
+.page-item.prev.disabled .page-link:before, .page-item.previous.disabled .page-link:before {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23003B69' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' class='feather feather-chevron-left'%3E%3Cpolyline points='15 18 9 12 15 6'%3E%3C/polyline%3E%3C/svg%3E");
+}
+
+.page-item.next.disabled .page-link:after{
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23003B69' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' class='feather feather-chevron-right'%3E%3Cpolyline points='9 18 15 12 9 6'%3E%3C/polyline%3E%3C/svg%3E");
+} 
+
+.page-item.active, .avatar {
+    background-color: #CCDCE8;
+}
+.page-item.active .page-link,.waves-float 
+    {
+    background-color: #262895 !important;
+}
+.nav-pills .nav-link.active {
+    background-color: #262895;
+    padding : 5px
+}
+
+.horizontal-links {
+    display: flex;
+    
+}
+
+.horizontal-links a {
+    margin-right: -5px;
+ /* Adjust the spacing between links as needed */
+} 
+/* .checkbox-group {
+    display: flex;
+        align-items: center;
+} */
+
+.form-check-input:not(:disabled):checked {
+    background-color:#262895
+}
+.main-menu .shadow-bottom {
+    display: none !important;
+}
+.active-card-bg-background  {
+    background-color:#004F8C;
+    color: aliceblue !important;
+}
+.active-card-text {
+    color: aliceblue !important;
+}
+
+
+
+    /* Override background color */
+    .toast-success {
+        background-color: #4CAF50 !important; 
+    }
+    
+    /* Override text color */
+    .toast-success .toast-message {
+        color: #fff !important; 
+        font-size: 18px;
+        font-weight: bold;
+    }
+    
+    /* Override border color */
+    .toast-success {
+        border-color: #4CAF50 !important; /* Change to desired color */
+    }
+    .btn-primary {
+        background-color: #262895 !important;
+    }
+    .table.dataTable td,
+        table.dataTable th {
+            padding: 0.72rem 0.5rem;
+        }
+                .iti--allow-dropdown input,
+                .iti--allow-dropdown input[type=text],
+                .iti--allow-dropdown input[type=tel],
+                .iti--separate-dial-code input,
+                .iti--separate-dial-code input[type=text],
+                .iti--separate-dial-code input[type=tel] {
+                    padding-left: 90px !important;
+                    padding-right: 110px !important;
+                }

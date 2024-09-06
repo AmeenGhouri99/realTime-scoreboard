@@ -1,30 +1,5 @@
-<!DOCTYPE html>
-<html lang="en">
+@extends('layouts.app')
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cricket Management Dashboard</title>
-    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
-    @livewireStyles
-</head>
-
-<body>
-    <div class="container mt-4">
-        <h1>Cricket Management Dashboard</h1>
-        <div class="row">
-            <div class="col-md-12">
-                @livewire('team-component')
-                @livewire('match-component')
-                @livewire('scoreboard-component', ['matchId' => 1]) <!-- Pass match ID dynamically -->
-            </div>
-        </div>
-    </div>
-
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-    @livewireScripts
-</body>
-
-</html>
+@section('content')
+    <livewire:tournament-component />
+@endsection

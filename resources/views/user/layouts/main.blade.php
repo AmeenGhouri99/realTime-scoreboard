@@ -1,0 +1,5 @@
+@include('user.layouts.header')
+@include('user.components.nav')
+@include('user.components.menu')
+@yield('content')
+@include('user.layouts.footer')

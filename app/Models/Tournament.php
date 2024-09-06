@@ -14,6 +14,7 @@ class Tournament extends Model
     // Define the fillable attributes for mass assignment
     protected $fillable = [
         'name',
+        'user_id',
         'start_date',
         'end_date',
         'location', // Optional: where the tournament is held
