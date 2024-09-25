@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::table('scores', function (Blueprint $table) {
             $table->dropColumn('innings');
             $table->enum('innings', ['first innings', 'second innings', 'draw'])->nullable();
+            $table->integer('bowler_wickets')->nullable();
         });
     }
 
@@ -25,6 +26,7 @@ return new class extends Migration
         Schema::table('scores', function (Blueprint $table) {
             $table->dropColumn('innings');
             $table->enum('innings', ['complete', 'going on', 'delayed'])->nullable();
+            $table->dropColumn('bowler_wickets');
 
             // $table->enum('innings', ['complete', 'going on', 'delayed'])->nullable()->change();
         });

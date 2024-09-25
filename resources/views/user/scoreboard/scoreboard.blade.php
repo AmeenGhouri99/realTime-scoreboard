@@ -15,7 +15,7 @@
         <div class="content-align-center">
             <div class="row">
                 <div class="col-1 shadow-lg team1">
-                    <h6 class="mt-1" id="batting_team"></h6>
+                    <h6 class="mt-1" id="batting_team" style="color: #ffffff; text-shadow: 1px 1px 2px black;"></h6>
                 </div>
                 <div class="col-10 rounded-pill shadow-lg main-scoreboard">
                     <div class="row">
@@ -33,7 +33,7 @@
                                     <div class="inner-scoreboard">
                                         <div class="row">
                                             <div class="col-4 text-end">
-                                                <span id="batting_team_name" style="font-weight: bold"></span>
+                                                <span id="batting_team_name" style="font-weight: bold;"></span>
                                             </div>
                                             <div class="col-4 text-left" style="font-weight: bold">
                                                 <span id="batting_team_score"></span>
@@ -48,7 +48,7 @@
                                     </div>
                                 </div>
                                 <div class="col-12">
-                                    <div class="score-need">
+                                    <div class="score-need" style="font-weight: bold">
                                         <p class="text-center" id="target_message">
                                         </p>
                                     </div>
@@ -66,14 +66,17 @@
                             </div>
                         </div>
                         <div class="col-2 bowler-info">
-                            <div id="bowler_name">
-                                <span id="bowler_balls_and_overs">0.4/3</span>
+                            <div>
+                                <span id="bowler_name"></span>
+                                <span id="bowler_wickets"></span>-<span id="bowler_runs"></span>
+                                (<span id="bowler_overs"></span>.<span id="bowler_ball_faced"></span>)
                             </div>
                         </div>
                     </div>
                 </div>
-                <div class="col-1 shadow-lg team2">
-                    <h6 class="mt-1" id="bowling_team_name"></h6>
+                <div class="col-1 shadow-lg team2 ">
+                    <h6 class="mt-1 " id="bowling_team_name" style="color:white; text-shadow: 1px 1px 2px black;">
+                    </h6>
                 </div>
             </div>
         </div>
@@ -87,8 +90,8 @@
 
         sseSource.onmessage = function(event) {
             let eventData = JSON.parse(event.data)
-            $('#first_player_name').text(eventData.scoreboard.first_player_name);
-            $('#second_player_name').text(eventData.scoreboard.second_player_name);
+            $('#first_player_name').text(eventData.scoreboard.first_player_name ?? "Unknown Player");
+            $('#second_player_name').text(eventData.scoreboard.second_player_name ?? "Unknown Player");
             // $('#batting_team_name').text(eventData.batting_team_name)
             $('#first_player_runs').text(eventData.scoreboard.first_player_runs)
             $('#first_player_ball_faced').text(eventData.scoreboard.first_player_ball_faced)
@@ -102,9 +105,11 @@
             $('#bowler_name').text(eventData.scoreboard.bowler_name)
             $('#bowler_runs').text(eventData.scoreboard.bowler_runs)
             $('#bowler_overs').text(eventData.scoreboard.bowler_overs)
+            $('#bowler_ball_faced').text(eventData.scoreboard.bowler_ball_faced)
             $('#target').text(eventData.target)
             $('#bowling_team_name').text(eventData.bowling_team_name)
             $('#target_message').text(eventData.target_message)
+            $('#bowler_wickets').text(eventData.scoreboard.bowler_wickets ?? 0)
             $('#batting_team_name,#batting_team').text(eventData.batting_team_name)
 
 

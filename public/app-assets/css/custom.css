@@ -8,7 +8,7 @@ body {
     border: 1px solid black;
     border-top-right-radius: 30px;
     border-bottom-right-radius: 30px;
-    background-image: linear-gradient(to left, rgba(255, 0, 0, 0), rgb(250, 114, 3));
+    background-image: linear-gradient(to right, rgb(7, 44, 12), rgb(249, 130, 1));
 }
 
 .team1 h6 {
@@ -88,9 +88,17 @@ body {
     border: 1px solid rgb(74, 74, 74);
     border-top-left-radius: 30px;
     border-bottom-left-radius: 30px;
-    background-image: linear-gradient(to right, rgba(255, 0, 0, 0), rgb(0, 247, 255));
+    background-image: linear-gradient(to right, rgba(255, 0, 0), rgb(7, 46, 48));
 }
 
 .team2 h6 {
     font-weight: bold;
 }
+ .outlined-text {
+     font-size: 20px;
+     color: white;
+     /* Text color */
+                            -webkit-text-stroke: 1px rgb(64, 1, 191);
+     /* Outline color and thickness */
+ }
+                         /* Outline size and color */

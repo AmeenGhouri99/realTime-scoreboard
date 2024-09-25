@@ -70,9 +70,8 @@ class ScoreBoardController extends Controller
                 'bowler_runs' => $request->input('bowler_runs'),
                 'innings' => $request->input('innings'),
                 'overs_done' => $request->input('overs_done'),
-                'total_wickets' => $request->input('total_wickets')
-
-
+                'total_wickets' => $request->input('total_wickets'),
+                'bowler_wickets' => $request->input('bowler_wickets'),
             ]);
 
             DB::commit();

@@ -29,7 +29,8 @@ class Score extends Model
         'innings',
         'overs_done',
         'innings',
-        'total_wickets'
+        'total_wickets',
+        'bowler_wickets'
     ];
     /**
      * Get the user that owns the Score
