@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class CricketMatch extends Model
 {
@@ -61,4 +62,27 @@ class CricketMatch extends Model
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
+    /**
+     * Get all of the scoreboard for the CricketMatch
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function scoreboard(): HasMany
+    {
+        return $this->hasMany(Score::class, 'match_id');
+    }
+
+    /**
+     * Get the user that owns the CricketMatch
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function battingTeam(): BelongsTo
+    {
+        return $this->belongsTo(Team::class, 'batting_team_id');
+    }
+    // public function scoreboard()
+    // {
+    //     return $this->belongsTo(Score::class, 'match_id');
+    // }
 }

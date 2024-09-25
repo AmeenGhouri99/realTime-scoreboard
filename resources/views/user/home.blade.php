@@ -35,7 +35,7 @@
                                                     <div class="row">
                                                         <div class="col-3"><a
                                                                 href="{{ route('user.teams.teamsOfTournament', $tournament->id) }}"
-                                                                class="btn btn-primary btn-sm">PayFee</a>
+                                                                class="btn btn-primary btn-sm">Check Teams</a>
                                                         </div>
                                                     </div>
                                                 </td>

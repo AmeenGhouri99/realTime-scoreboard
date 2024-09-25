@@ -42,13 +42,18 @@
          </div> --}}
          <div class="text-center">
              <img src="{{ asset('app-assets/images/uni.png') }}" alt="logo" style="width: 120px; height:120px">
-             <h2 class="brand-text text-primary ms-1">MNS UET MULTAN</h2>
+             <h2 class="brand-text text-primary ms-1">ScoreBoard For LiveVideos</h2>
          </div>
-         <ul class="nav justify-content-center with-space-between mb-2">
+         <ul class="nav justify-content-center mb-2">
              <li class="nav-item">
                  <a class="nav-link btn btn-outline-success {{ Route::CurrentRouteNamed('user.dashboard') ? 'btn-success' : null }}"
                      href="{{ route('user.dashboard') }}">Home</a>
              </li>
+             <li class="nav-item mx-1">
+                 <a class="nav-link btn btn-outline-success {{ Route::CurrentRouteNamed('user.tournaments.index') ? 'btn-success' : null }}"
+                     href="{{ route('user.tournaments.index') }}">Tournaments</a>
+             </li>
+             @yield('add_menu_items')
              {{-- <li class="nav-item">
                  <a class="nav-link btn btn-outline-success {{ Route::CurrentRouteNamed('user.personal-information.create') || Route::CurrentRouteNamed('user.personal-information.edit') ? 'btn-success' : null }}"
                      href="{{ route('user.personal-information.create') }}">Personal

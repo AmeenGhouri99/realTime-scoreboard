@@ -6,24 +6,16 @@
             <div class="row match-height">
                 <!-- Academic Card -->
                 <div class="col-xl-12 col-md-6 col-12">
-                    <h3>Teams of the Tournament</h3>
-                    <ul style="color: red">
-                        <li>All Teams of the specific Tournament</li>
-                        {{-- <li>Admission Status are given below</li> --}}
-                    </ul>
-                    <div class="content-header-right text-md-end col-md-3 col-12 d-md-block d-none">
-                        <div class="mb-1 breadcrumb-right">
-                            @php
-                                $lastSegment = request()->segment(count(request()->segments()));
-                            @endphp
-
-                            <!-- Now you can use $lastSegment -->
-                            <p>The last segment of the URL is: {{ $lastSegment }}</p>
-
-                            <a class="dt-button create-new btn btn-primary"
+                    <div class="row mb-1">
+                        <div class="col-sm-6">
+                            <h5>Teams of the Tournaments</h5>
+                        </div>
+                        <div class="col-sm-6 text-end">
+                            <a class="dt-button create-new btn btn-primary content-end"
                                 href="{{ route('user.teams.addTeams', request()->id) }}"><i data-feather='plus'></i></a>
                         </div>
                     </div>
+
                     <div class="card card-statistics">
                         <div class="card-body statistics-body">
                             @include('flash::message')
@@ -57,6 +49,9 @@
                                                 <a href="{{ route('user.manage.match', $match->id) }}"
                                                     class="btn btn-success btn-sm">
                                                     Match</a>
+                                                <a href="{{ route('user.scoreboard.create', $match->id) }}"
+                                                    class="btn btn-primary btn-sm">
+                                                    ScoreBoard</a>
                                             </td>
                                         </tr>
                                     @endforeach

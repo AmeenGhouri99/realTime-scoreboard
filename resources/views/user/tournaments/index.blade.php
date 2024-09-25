@@ -6,11 +6,15 @@
             <div class="row match-height">
                 <!-- Academic Card -->
                 <div class="col-xl-12 col-md-6 col-12">
-                    <h3>All Tournaments</h3>
-                    {{-- <ul style="color: red">
-                        <li>Below is the admission details</li>
-                        <li>Admission Status are given below</li>
-                    </ul> --}}
+                    <div class="row mb-1">
+                        <div class="col-sm-6">
+                            <h5>All Tournaments</h5>
+                        </div>
+                        <div class="col-sm-6 text-end">
+                            <a class="dt-button create-new btn btn-primary content-end"
+                                href="{{ route('user.tournaments.create') }}"><i data-feather='plus'></i></a>
+                        </div>
+                    </div>
                     <div class="card card-statistics">
                         <div class="card-body statistics-body">
                             @include('flash::message')

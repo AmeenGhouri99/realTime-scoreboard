@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Exceptions\CustomException;
 use App\Helpers\Helper;
 use App\Models\CricketMatch;
+use App\Models\Score;
 use App\Models\Team;
 use App\Models\Tournament;
 use Illuminate\Http\Request;
@@ -18,7 +19,7 @@ class TeamController extends Controller
         $teams = Team::where('tournament_id', $id)->with('tournament', 'Team1Match', 'Team2Match')->get();
         $matches = CricketMatch::with(['team1', 'team2', 'tournament' => function ($query) {
             $query->where('user_id', Auth::id());
-        }])->get();
+        }])->where('tournament_id', $id)->orderBy('created_at', 'desc')->get();
         return view('user.teams.index', compact('matches'));
     }
     public function store(Request $request)
@@ -38,6 +39,14 @@ class TeamController extends Controller
                 'tournament_id' => $request->input('tournament_id'),
                 'team1_id' => $team1->id,
                 'team2_id' => $team2->id,
+            ]);
+            Score::create([
+                'team_id' => $team1->id,
+                'match_id' => $CricketMatch->id
+            ]);
+            Score::create([
+                'team_id' => $team2->id,
+                'match_id' => $CricketMatch->id
             ]);
             DB::commit();
             flash('Team created successfully.')->success();

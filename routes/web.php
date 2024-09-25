@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\MatchController;
 use App\Http\Controllers\PlayerController;
+use App\Http\Controllers\ScoreBoardController;
 use App\Http\Controllers\TeamController;
 use App\Http\Controllers\TournamentController;
 
@@ -37,6 +38,9 @@ Route::post('reset_password', [AuthController::class, 'reset_Password'])->name('
 Route::get('/welcome', function () {
     return view('user/welcome');
 });
+Route::get('scoreboard-ticker/{id}', [ScoreBoardController::class, 'scoreTicker'])->name('scoreboard.ticker');
+
+Route::get('scoreBoard/{id}', [ScoreBoardController::class, 'scoreBoard'])->name('scoreBoard');
 
 Route::group(['middleware' => ['auth:sanctum', 'user'], 'prefix' => 'user', 'as' => 'user.'], function () {
     Route::get('dashboard', [HomeController::class, 'index'])->name('dashboard');
@@ -51,6 +55,10 @@ Route::group(['middleware' => ['auth:sanctum', 'user'], 'prefix' => 'user', 'as'
     // Route::get('manage_match/{id}', [MatchController::class, 'manageMatch']);
     Route::resource('matches', MatchController::class);
     Route::get('/manage-match/{id}', [MatchController::class, 'create'])->name('manage.match');
+    Route::get('/score-board/{id}', [ScoreBoardController::class, 'scoreBoardCreate'])->name('scoreboard.create');
+    Route::put('score-board/{id}', [ScoreBoardController::class, 'scoreBoardUpdate'])->name('scoreboard.update');
+
+
     Route::get('teams/teamsOfTournament/{id}', [TeamController::class, 'teamsOfTournament'])->name('teams.teamsOfTournament');
     Route::get('teams/addTeams/{id}', [TeamController::class, 'addTeamsToTournament'])->name('teams.addTeams');
 });

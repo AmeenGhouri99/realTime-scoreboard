@@ -11,6 +11,7 @@ use App\Models\BowlerStat;
 use App\Models\BowlerStats;
 use App\Models\CricketMatch;
 use App\Models\PlayerStats;
+use App\Models\Score;
 use App\Models\Team;
 use App\Models\Tournament;
 use Illuminate\Http\Request;
@@ -23,7 +24,6 @@ class MatchController extends Controller
     {
         // You can pass additional data to the view if needed
         // For example, if you want to preload some tournaments or teams
-        $tournaments = Tournament::all(); // Fetch all tournaments
         $match = CricketMatch::find($id); // Fetch all teams
 
         return view('user.matches.create', compact('match'));
@@ -38,8 +38,9 @@ class MatchController extends Controller
                 'team2_id' => $request->input('team2_id')
             ]);
 
+
             DB::commit();
-            flash('Tournament created successfully.')->success();
+            flash('Match created successfully.')->success();
             $teams = Team::where('tournament_id', $request->input('tournament_id'))->pluck('name', 'id');
             return view('user.matches.index', ('teams'));
         } catch (CustomException $e) {
@@ -55,32 +56,21 @@ class MatchController extends Controller
     }
     public function update($id, Request $request)
     {
-        // dd($id);
+        // dd($request);
         try {
             $model = CricketMatch::find($id);
             $match = $model->update([
-                'team1_runs' => $request->input('team1_runs'),
-                'team2_runs' => $request->input('team2_runs'),
-                'team1_extras' => $request->input('team1_extras'),
-                'team2_extras' => $request->input('team2_extras'),
-                'bowler_name' => $request->input('bowler_name'),
-                'bowler_overs' => $request->input('bowler_overs'),
+
                 'total_overs' => $request->input('total_overs'),
-                'bowler_runs' => $request->input('bowler_runs'),
-                'total_fours_team1' => $request->input('total_fours_team1'),
-                'total_sixes_team1' => $request->input('total_sixes_team1'),
-                'total_fours_team2' => $request->input('total_fours_team2'),
-                'total_sixes_team2' => $request->input('total_sixes_team2'),
-                'total_wickets_team1' => $request->input('total_wickets_team1'),
-                'total_wickets_team2' => $request->input('total_wickets_team2'),
                 'which_team_won_the_toss' => $request->input('which_team_won_the_toss'),
                 'elected_to_bat' => $request->input('elected_to_bat'),
                 'which_player_on_strike' => $request->input('which_player_on_strike'),
+                'batting_team_id' => $request->input('batting_team_id')
             ]);
 
             DB::commit();
-            flash('Tournament created successfully.')->success();
-            return redirect()->route('teams.teamsOfTournament', $request->input('tournament_id'));
+            flash('Match updated successfully.')->success();
+            return redirect()->route('user.teams.teamsOfTournament', $request->input('tournament_id'));
         } catch (CustomException $e) {
             DB::rollback();
             flash($e->getMessage())->error();

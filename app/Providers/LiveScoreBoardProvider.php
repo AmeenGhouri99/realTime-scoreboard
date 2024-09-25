@@ -6,6 +6,7 @@ use App\Contracts\AuthContract;
 use App\Contracts\TournamentContract;
 use App\Services\AuthService;
 use App\Services\TournamentService;
+use Illuminate\Support\Facades\URL;
 use Illuminate\Support\ServiceProvider;
 
 class LiveScoreBoardProvider extends ServiceProvider
@@ -34,6 +35,8 @@ class LiveScoreBoardProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
+        if (config('app.env') !== 'local') {
+            URL::forceScheme('https');
+        }
     }
 }

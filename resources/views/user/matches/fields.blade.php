@@ -17,6 +17,10 @@
         <label for="elected_bat_first_or_ball_first">Select Batting Team:</label>
         {{ html()->select('batting_team_id', ['' => 'Select', $match->team1_id => $match->team1->name, $match->team2_id => $match->team2->name])->class('form-control form-control-sm') }}
     </div>
+    <div class="col-xl-3 col-sm-6 col-12 mb-2 mb-xl-0">
+        <label for="elected_bat_first_or_ball_first">Total Overs:</label>
+        {{ html()->number('total_overs')->class('form-control form-control-sm')->placeholder('e.g 20') }}
+    </div>
     {{-- <div class="col-xl-3 col-sm-6 col-12 mb-2 mb-xl-0">
         <label for="team1_runs">Player 1 Name:</label>
         {{ html()->text('player1_name')->class('form-control form-control-sm')->placeholder('First Player Name ') }}
