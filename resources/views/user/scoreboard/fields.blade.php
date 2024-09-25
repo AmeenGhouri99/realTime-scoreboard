@@ -78,7 +78,7 @@
     </div> --}}
     <div class="col-xl-3 col-sm-6 col-12 mb-2 mb-xl-0">
         <label for="total_scores">Innings Status</label>
-        {{ html()->select('innings', ['' => 'Status', 'complete' => 'Complete', 'going on' => 'Going On', 'delayed' => 'Delayed'])->class('form-control form-control-sm') }}
+        {{ html()->select('innings', ['' => 'select innings', 'first innings' => '1st Innings', 'second innings' => '2nd Innings', 'draw' => 'draw'])->class('form-control form-control-sm') }}
     </div>
     <div class="col-xl-12 col-sm-6 col-12 mb-2 mb-xl-0 mt-1">
         {{ html()->button('Save Match')->type('submit')->class('btn btn-primary') }}

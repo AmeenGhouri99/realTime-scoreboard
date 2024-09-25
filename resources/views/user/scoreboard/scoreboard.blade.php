@@ -21,30 +21,27 @@
                     <div class="row">
                         <div class="col-2 player1">
                             <span id="first_player_name" style="font-weight: bold"></span>
-                            <span id="first_player_runs"></span>
-                            (<span id="first_player_ball_faced"></span>)
-
+                            <span id="first_player_runs"></span>(<span id="first_player_ball_faced"></span>)
                         </div>
                         <div class="col-2 player2">
                             <span id="second_player_name" style="font-weight: bold"></span>
-                            <span id="second_player_runs"></span>
-                            (<span id="second_player_ball_faced"></span>)
+                            <span id="second_player_runs"></span>(<span id="second_player_ball_faced"></span>)
                         </div>
                         <div class="col-4">
                             <div class="row">
                                 <div class="col-12">
                                     <div class="inner-scoreboard">
                                         <div class="row">
-                                            <div class="col-4 text-center">
+                                            <div class="col-4 text-end">
                                                 <span id="batting_team_name" style="font-weight: bold"></span>
                                             </div>
-                                            <div class="col-4">
+                                            <div class="col-4 text-left" style="font-weight: bold">
                                                 <span id="batting_team_score"></span>
                                                 /<span id="batting_team_out"></span>
                                             </div>
-                                            <div class="col-4">
-                                                <span style="font-size: 12px; font-weight:bold"> Ovs. &nbsp</span><span
-                                                    id="running_over"></span>
+                                            <div class="col-4"
+                                                style="font-size: 14px; font-weight:bold;margin-top:2px">
+                                                <span> Ovs. &nbsp</span><span id="running_over"></span>
                                                 /<span id="total_overs"></span>
                                             </div>
                                         </div>
@@ -105,7 +102,7 @@
             $('#bowler_name').text(eventData.scoreboard.bowler_name)
             $('#bowler_runs').text(eventData.scoreboard.bowler_runs)
             $('#bowler_overs').text(eventData.scoreboard.bowler_overs)
-            $('#target').text(eventData.scoreboard.target)
+            $('#target').text(eventData.target)
             $('#bowling_team_name').text(eventData.bowling_team_name)
             $('#target_message').text(eventData.target_message)
             $('#batting_team_name,#batting_team').text(eventData.batting_team_name)

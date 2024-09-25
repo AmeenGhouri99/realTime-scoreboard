@@ -153,14 +153,15 @@ class ScoreBoardController extends Controller
 
         $scoreboard = $data->scoreboard->where('team_id', $data->batting_team_id)->where('match_id', $data->id)->first();
         $target_message = "";
+        $target = "";
         // $target_message = $target->where('innings', 'second i')->first();
         // $target_message = $target->innings;
         if ($scoreboard->innings === 'first innings') {
             // dd('ok');
             $target_message = "First Inning is Going On";
+            $target = "Yet To Bat";
         } elseif ($scoreboard->innings === 'second innings') {
             $first_inning = $scoreboard->innings === 'first innings'; // Boolean to check if it's the first inning
-
             // Total balls available based on total overs
             $total_balls = $data->total_overs * 6;
 
@@ -172,6 +173,7 @@ class ScoreBoardController extends Controller
 
             // Assuming you want to calculate the remaining runs required
             $first_inning = $scoreboard->where('innings', 'first innings')->first();
+            $target = $first_inning->total_scores;
             $remaining_runs = $first_inning->total_scores - $scoreboard->total_scores;
 
             // Construct the message
@@ -188,6 +190,7 @@ class ScoreBoardController extends Controller
             'batting_team_name' => $batting_team_name,
             'target_message' => $target_message,
             'bowling_team_name' => $bowling_team_name,
+            'target' => $target
         ];
 
         // error_log(print_r(headers_list(), true)); // Log the headers to the PHP error log
