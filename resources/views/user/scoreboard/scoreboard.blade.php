@@ -39,11 +39,15 @@
                                                 <span id="batting_team_score"></span>
                                                 /<span id="batting_team_out"></span>
                                             </div>
-                                            <div class="col-4"
-                                                style="font-size: 14px; font-weight:bold;margin-top:2px">
-                                                <span> Ovs. &nbsp</span><span id="running_over"></span>
-                                                /<span id="total_overs"></span>
+                                            <div class="col-4">
+                                                <span style="font-size: 14px; font-weight:bold; margin-top:2px"> Ovs.
+                                                    &nbsp</span><span id="running_over"
+                                                    style="font-size: 14px; font-weight: bold;"></span>.<span
+                                                    id="current_over_balls"
+                                                    style="font-size: 14px; font-weight: bold;"></span>/<span
+                                                    id="total_overs" style="font-size: 14px; font-weight: bold;"></span>
                                             </div>
+
                                         </div>
                                     </div>
                                 </div>
@@ -93,19 +97,19 @@
             $('#first_player_name').text(eventData.scoreboard.first_player_name ?? "Unknown Player");
             $('#second_player_name').text(eventData.scoreboard.second_player_name ?? "Unknown Player");
             // $('#batting_team_name').text(eventData.batting_team_name)
-            $('#first_player_runs').text(eventData.scoreboard.first_player_runs)
-            $('#first_player_ball_faced').text(eventData.scoreboard.first_player_ball_faced)
-            $('#second_player_runs').text(eventData.scoreboard.second_player_runs)
-            $('#second_player_ball_faced').text(eventData.scoreboard.second_player_ball_faced)
-            $('#batting_team_score').text(eventData.scoreboard.total_scores)
-            $('#batting_team_out').text(eventData.scoreboard.total_wickets)
-            $('#running_over').text(eventData.scoreboard.overs_done)
-            $('#total_overs').text(eventData.data.total_overs)
-            $('#extras').text(eventData.scoreboard.extra)
-            $('#bowler_name').text(eventData.scoreboard.bowler_name)
-            $('#bowler_runs').text(eventData.scoreboard.bowler_runs)
-            $('#bowler_overs').text(eventData.scoreboard.bowler_overs)
-            $('#bowler_ball_faced').text(eventData.scoreboard.bowler_ball_faced)
+            $('#first_player_runs').text(eventData.scoreboard.first_player_runs ?? 0)
+            $('#first_player_ball_faced').text(eventData.scoreboard.first_player_ball_faced ?? 0)
+            $('#second_player_runs').text(eventData.scoreboard.second_player_runs ?? 0)
+            $('#second_player_ball_faced').text(eventData.scoreboard.second_player_ball_faced ?? 0)
+            $('#batting_team_score').text(eventData.scoreboard.total_scores ?? 0)
+            $('#batting_team_out').text(eventData.scoreboard.total_wickets ?? 0)
+            $('#running_over').text(eventData.scoreboard.overs_done ?? 0)
+            $('#total_overs').text(eventData.data.total_overs ?? 0)
+            $('#extras').text(eventData.scoreboard.extra ?? 0)
+            $('#bowler_name').text(eventData.scoreboard.bowler_name ?? "Unknown Bowler")
+            $('#bowler_runs').text(eventData.scoreboard.bowler_runs ?? 0)
+            $('#bowler_overs').text(eventData.scoreboard.bowler_overs ?? 0)
+            $('#bowler_ball_faced, #current_over_balls').text(eventData.scoreboard.bowler_ball_faced ?? 0)
             $('#target').text(eventData.target)
             $('#bowling_team_name').text(eventData.bowling_team_name)
             $('#target_message').text(eventData.target_message)
@@ -113,7 +117,7 @@
             $('#batting_team_name,#batting_team').text(eventData.batting_team_name)
 
 
-            console.log(eventData);
+            console.log(eventData.scoreboard.bowler_ball_faced);
 
         };
 
