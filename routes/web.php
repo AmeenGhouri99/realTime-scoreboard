@@ -20,7 +20,7 @@ Route::get('admin-login', function () {
 
 Route::post('register', [AuthController::class, 'register'])->name('register');
 Route::post('/', [AuthController::class, 'login'])->name('login-submit');
-Route::post('/admin/login', [AuthController::class, 'login'])->name('admin-login');
+Route::post('/admin/login', [AuthController::class, 'login'])->name('admin-login-submit');
 Route::get('/admin/login', [AuthController::class, 'adminLoginPage'])->name('admin.login_page');
 Route::get('/', [AuthController::class, 'loginPage'])->name('login');
 Route::get('register', [AuthController::class, 'registerPage'])->name('register');
