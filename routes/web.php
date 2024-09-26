@@ -47,7 +47,7 @@ Route::group(['middleware' => ['auth:sanctum', 'user'], 'prefix' => 'user', 'as'
 
 
     // Route::get('/matches/{id}', [MatchController::class, 'show'])->name('matches.show');
-    Route::put('/matches/{match}', [MatchController::class, 'update'])->name('matches.update');
+    // Route::put('/matches/{match}', [MatchController::class, 'update'])->name('matches.update');
     // Tournament routes
     Route::resource('tournaments', TournamentController::class);
     Route::resource('teams', TeamController::class);
