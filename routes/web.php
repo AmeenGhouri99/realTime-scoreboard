@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\BallController;
 use App\Http\Controllers\HomeController;
 use Illuminate\Support\Facades\Request;
 use Illuminate\Support\Facades\Route;
@@ -47,17 +48,25 @@ Route::group(['middleware' => ['auth:sanctum', 'user'], 'prefix' => 'user', 'as'
 
 
     // Route::get('/matches/{id}', [MatchController::class, 'show'])->name('matches.show');
-    Route::put('/matches/{match}', [MatchController::class, 'update'])->name('matches.update');
+    // Route::put('/matches/{match}', [MatchController::class, 'update'])->name('matches.update');
     // Tournament routes
     Route::resource('tournaments', TournamentController::class);
     Route::resource('teams', TeamController::class);
-    Route::post('/players', [PlayerController::class, 'store']);
+    Route::get('team/players/{id}', [PlayerController::class, 'index'])->name('players.index');
+    Route::get('players/edit/{id}', [PlayerController::class, 'edit'])->name('players.edit');
+    Route::delete('players/delete/{id}', [PlayerController::class, 'destroy'])->name('players.delete');
+    Route::get('players/{id}', [PlayerController::class, 'create'])->name('players.create');
+    Route::post('/players', [PlayerController::class, 'store'])->name('players.store');
+    Route::post('balls', [BallController::class, 'updateBallCount'])->name('balls.store');
+
+    Route::post('/select-batter', [PlayerController::class, 'store'])->name('players.store');
+    Route::put('/players/change-strike/{id}', [PlayerController::class, 'changeStrike'])->name('players.change-strike');
     // Route::get('manage_match/{id}', [MatchController::class, 'manageMatch']);
     Route::resource('matches', MatchController::class);
     Route::get('/manage-match/{id}', [MatchController::class, 'create'])->name('manage.match');
     Route::get('/score-board/{id}', [ScoreBoardController::class, 'scoreBoardCreate'])->name('scoreboard.create');
     Route::put('score-board/{id}', [ScoreBoardController::class, 'scoreBoardUpdate'])->name('scoreboard.update');
-
+    Route::get('teams/teamsOfTournament/{id}', [TeamController::class, 'teamsOfTournament'])->name('teams.teamsOfTournament');
 
     Route::get('teams/teamsOfTournament/{id}', [TeamController::class, 'teamsOfTournament'])->name('teams.teamsOfTournament');
     Route::get('teams/addTeams/{id}', [TeamController::class, 'addTeamsToTournament'])->name('teams.addTeams');

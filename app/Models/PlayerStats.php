@@ -8,9 +8,10 @@ use Illuminate\Database\Eloquent\Model;
 class PlayerStats extends Model
 {
     use HasFactory;
+    protected $table = 'players_stats';
 
     protected $fillable = [
-        'match_id',
+        'scoreboard_id',
         'player_id',
         'is_on_strike',
         'runs',

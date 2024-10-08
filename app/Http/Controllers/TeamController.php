@@ -14,9 +14,14 @@ use Illuminate\Support\Facades\DB;
 
 class TeamController extends Controller
 {
-    public function teamsOfTournament($id)
+    public function teams($id)
     {
         $teams = Team::where('tournament_id', $id)->with('tournament', 'Team1Match', 'Team2Match')->get();
+        return view('user.teams.index', compact('teams'));
+    }
+    public function teamsOfTournament($id)
+    {
+        $teams = Team::where('tournament_id', $id)->with('tournament', 'Team1Match', 'Team2Match', 'teamPlayers')->get();
         $matches = CricketMatch::with(['team1', 'team2', 'tournament' => function ($query) {
             $query->where('user_id', Auth::id());
         }])->where('tournament_id', $id)->orderBy('created_at', 'desc')->get();

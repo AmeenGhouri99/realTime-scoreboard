@@ -4,22 +4,62 @@ namespace App\Http\Controllers;
 
 use App\Exceptions\CustomException;
 use App\Helpers\Helper;
+use App\Models\BowlerStats;
 use App\Models\CricketMatch;
 use App\Models\Player;
+use App\Models\PlayerStats;
 use App\Models\Score;
 use App\Models\Team;
 use App\Models\Tournament;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class ScoreBoardController extends Controller
 {
     public function scoreBoardCreate($id)
     {
+        // dd($id);
         $match = CricketMatch::with('team1', 'team2', 'tournament')->find($id);
+        $batting_team_name = $match->battingTeam->find($match->batting_team_id)->name;
+
+        // Determine the bowling team based on which team is not the batting team
+        if ($match->batting_team_id == $match->team1_id) {
+            $bowling_team_id = $match->team2->id;  // team2 is the bowling team
+        } else {
+            $bowling_team_id = $match->team1->id;  // team1 is the bowling team
+        }
         $scoreboard = Score::where('match_id', $match->id)->where('team_id', $match->batting_team_id)->with('team', 'match')->first();
+        if ($scoreboard && (empty($scoreboard->player1_id) || empty($scoreboard->player2_id) || empty($scoreboard->bowler_id))) {
+            $count_batsman = 2;  // Set default value to zero
+            $already_on_strikes = [];  // List to store the batsmen already on strike
+
+            if (empty($scoreboard->player1_id) && empty($scoreboard->player2_id)) {
+                // No batsman is selected, need to select two
+                // $count_batsman = 2;
+            } elseif (empty($scoreboard->player1_id)) {
+                // Player1 is out, so only one more batsman is needed
+                // $count_batsman = 1;
+                $already_on_strikes[] = $scoreboard->player2_id;  // Player2 is already on strike
+            } elseif (empty($scoreboard->player2_id)) {
+                // Player2 is out, so only one more batsman is needed
+                // $count_batsman = 1;
+                $already_on_strikes[] = $scoreboard->player1_id;  // Player1 is already on strike
+            }
+            if (empty($scoreboard->bowler_id)) {
+                flash("Please select Bowler")->warning();
+                $players = Player::where('team_id', $bowling_team_id)->get();
+                $team_id = $match->batting_team_id;
+                return view('user.players.select_bowler', compact('scoreboard', 'players', 'team_id'));
+            }
+            flash("Please select batsman(s)")->warning();
+
+            $team_id = $match->batting_team_id;
+            $players = Player::where('team_id', $team_id)->get();
+            return view('user.players.select_batting_player', compact('scoreboard', 'players', 'team_id', 'count_batsman', 'already_on_strikes'));
+        }
         // dd($match); // Fetch all teams
-        return view('user.scoreboard.edit', compact('scoreboard'));
+        return view('user.scoreboard.fields', compact('scoreboard'));
     }
     public function store(Request $request)
     {
@@ -49,46 +89,56 @@ class ScoreBoardController extends Controller
     }
     public function scoreBoardUpdate($id, Request $request)
     {
-        // dd($id);
+        DB::beginTransaction();
         try {
             $model = Score::find($id);
+
             $match = $model->update([
                 'which_team_won_the_toss' => $request->input('which_team_won_the_toss'),
                 'elected_to_bat' => $request->input('elected_to_bat'),
                 'batting_team_id' => $request->input('batting_team_id'),
-                'first_player_name' => $request->input('first_player_name'),
-                'second_player_name' => $request->input('second_player_name'),
+                'player1_id' => $request->player_id[0] ?? $model->player1_id,
+                'player2_id' =>  $request->player_id[1] ?? $model->player2_id,
                 'total_scores' => $request->input('total_scores'),
-                'first_player_runs' => $request->input('first_player_runs'),
-                'second_player_runs' => $request->input('second_player_runs'),
-                'first_player_ball_faced' => $request->input('first_player_ball_faced'),
-                'second_player_ball_faced' => $request->input('second_player_ball_faced'),
+                'bowler_id' => $request->input('bowler_id') ?? $model->bowler_id,
                 'extra' => $request->input('extra'),
-                'bowler_name' => $request->input('bowler_name'),
-                'bowler_ball_faced' => $request->input('bowler_ball_faced'),
-                'bowler_overs' => $request->input('bowler_overs'),
-                'bowler_runs' => $request->input('bowler_runs'),
                 'innings' => $request->input('innings'),
                 'overs_done' => $request->input('overs_done'),
                 'total_wickets' => $request->input('total_wickets'),
-                'bowler_wickets' => $request->input('bowler_wickets'),
             ]);
+
+            // Update or create player stats
+            if ($request->has('player_id')) {
+                foreach ($request->player_id as $player_id) {
+                    PlayerStats::updateOrCreate(
+                        ['scoreboard_id' => $id, 'player_id' => $player_id],
+                        ['scoreboard_id' => $id, 'player_id' => $player_id] // Add more fields as needed
+                    );
+                }
+            }
+
+            // Update or create bowler stats
+            if ($request->has('bowler_id')) {
+                BowlerStats::updateOrCreate(
+                    ['scoreboard_id' => $id, 'bowler_id' => $request->bowler_id] // Add more fields as needed
+                );
+            }
 
             DB::commit();
             flash('Scoreboard updated successfully.')->success();
-            return back();
-            // return redirect()->route('user.teams.teamsOfTournament', $request->input('tournament_id'));
+            return response()->json(['status' => 'success'], 200); // Response for AJAX
         } catch (CustomException $e) {
             DB::rollback();
             flash($e->getMessage())->error();
-            return back();
+            return response()->json(['status' => 'error', 'message' => $e->getMessage()], 500);
         } catch (\Exception $e) {
             DB::rollback();
             Helper::logMessage('ScoreBoard store', $request->input(), $e->getMessage());
             flash("Something Went Wrong!")->error();
-            return back();
+            return response()->json(['status' => 'error', 'message' => 'Something went wrong'], 500);
         }
     }
+
     public function show($id)
     {
         $match = CricketMatch::with(['team1', 'team2', 'players.player', 'bowlers.bowler'])->findOrFail($id);

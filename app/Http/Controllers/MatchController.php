@@ -4,18 +4,12 @@ namespace App\Http\Controllers;
 
 use App\Exceptions\CustomException;
 use App\Helpers\Helper;
-use App\Models\Match;
 use App\Models\Player;
-use App\Models\PlayerStat;
-use App\Models\BowlerStat;
-use App\Models\BowlerStats;
+
 use App\Models\CricketMatch;
-use App\Models\PlayerStats;
-use App\Models\Score;
+
 use App\Models\Team;
-use App\Models\Tournament;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
 class MatchController extends Controller

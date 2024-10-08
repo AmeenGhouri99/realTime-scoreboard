@@ -6,11 +6,16 @@
             <div class="row match-height">
                 <!-- Academic Card -->
                 <div class="col-xl-12 col-md-6 col-12">
-                    <h3>Matches Details</h3>
-                    <ul style="color: red">
-                        <li>Here the all matches of the specific Tournament will show</li>
-                        {{-- <li>Admission Status are given below</li> --}}
-                    </ul>
+                    <div class="row mb-1">
+                        <div class="col-sm-6">
+                            <h5>Matches Of the Tournaments</h5>
+                        </div>
+                        <div class="col-sm-6 text-end">
+                            <a class="dt-button create-new btn btn-primary content-end"
+                                href="{{ route('user.teams.addTeams', request()->id) }}"><i data-feather='plus'></i></a>
+                        </div>
+                    </div>
+
                     <div class="card card-statistics">
                         <div class="card-body statistics-body">
                             @include('flash::message')
@@ -27,22 +32,34 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @if ($team->tournament->isEmpty())
-                                        <tr class="text-center">
-                                            <td colspan="8">No Match is being Created</td>
+                                    @foreach ($matches as $match)
+                                        <tr>
+                                            <td>{{ $loop->iteration }}</td>
+                                            {{-- <td>{{ $team->Team1Match }}</td> --}}
+                                            <td>
+                                                {{ $match->tournament->name }}
+                                            </td>
+                                            <td>
+                                                {{ $match->team1->name }}
+                                            </td>
+                                            <td>
+                                                {{ $match->team2->name }}
+                                            </td>
+                                            <td>
+                                                {{-- <a href="{{ route('user.players.create', $match->id) }}"
+                                                    class="btn btn-primary btn-sm">
+                                                    Add Players</a> --}}
+                                                <a href="{{ route('user.manage.match', $match->id) }}"
+                                                    class="btn btn-success btn-sm">
+                                                    Match</a>
+
+                                                <a href="{{ route('user.scoreboard.create', $match->id) }}"
+                                                    class="btn btn-primary btn-sm">
+                                                    ScoreBoard</a>
+                                            </td>
                                         </tr>
-                                    @else
-                                        @foreach ($teams as $team)
-                                            <tr>
-                                                <td>{{ $loop->iteration }}</td>
-                                                <td>{{ $team->Team1Match->team1->name }}</td>
-                                                <td>{{ $team->Team2Match->team2->name }}</td>
-                                                <td>
-                                                    <button>Edit</button>
-                                                </td>
-                                            </tr>
-                                        @endforeach
-                                    @endif
+                                    @endforeach
+                                    {{-- @endif --}}
                                 </tbody>
                             </table>
                         </div>

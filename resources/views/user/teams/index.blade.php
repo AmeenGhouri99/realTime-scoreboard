@@ -41,14 +41,33 @@
                                             </td>
                                             <td>
                                                 {{ $match->team1->name }}
+                                                <br>
+
+                                                Players: {{ $match->team1->teamPlayers->count() }}
+                                                <br>
+
+                                                Add More
+                                                <a href="{{ route('user.players.index', $match->team1->id) }}"><i
+                                                        data-feather='plus-circle'></i></a>
                                             </td>
                                             <td>
                                                 {{ $match->team2->name }}
+
+                                                <br>
+                                                Players: {{ $match->team2->teamPlayers->count() }}
+                                                <br>
+                                                Add More
+                                                <a href="{{ route('user.players.index', $match->team2->id) }}"><i
+                                                        data-feather='plus-circle'></i></a>
                                             </td>
                                             <td>
+                                                {{-- <a href="{{ route('user.players.create', $match->id) }}"
+                                                    class="btn btn-primary btn-sm">
+                                                    Add Players</a> --}}
                                                 <a href="{{ route('user.manage.match', $match->id) }}"
                                                     class="btn btn-success btn-sm">
                                                     Match</a>
+
                                                 <a href="{{ route('user.scoreboard.create', $match->id) }}"
                                                     class="btn btn-primary btn-sm">
                                                     ScoreBoard</a>
