@@ -199,51 +199,116 @@
     {{ html()->button('Save Match')->type('submit')->class('btn btn-primary') }}
 </div>
 </div>
-{{-- @push('js_scripts') --}}
+<div id="customModal" class="modal">
+    <div class="modal-content">
+        <span class="close-btn" id="closeModalBtn">&times;</span>
+        <h2>Add Ball Information</h2>
+
+        <!-- Display Button Details -->
+        <p id="buttonDetails" class="button-details"></p>
+
+        <!-- Display Wide or No-Ball Runs -->
+        <div id="wideRuns" class="wide-runs" style="display: none;"></div>
+
+        {{-- <form action="{{ route('user.balls.store') }}" method="POST">
+            @csrf --}}
+        <div class="form-group">
+            <label for="runs">Additional Runs</label>
+            <input type="number" id="runs" name="runs" class="form-input" required>
+        </div>
+
+        <div class="form-group">
+            <label>Run Type</label><br>
+            <input type="radio" id="from_bat" name="run_type" value="from_bat" required>
+            <label for="from_bat">From Bat</label>
+
+            <input type="radio" id="bye" name="run_type" value="bye">
+            <label for="bye">Bye</label>
+
+            <input type="radio" id="leg_bye" name="run_type" value="leg_bye">
+            <label for="leg_bye">Leg Bye</label>
+        </div>
+
+        <div class="form-group">
+            <button type="button" id="modalSubmitBtn" class="btn btn-primary">Submit</button>
+        </div>
+        {{-- </form> --}}
+    </div>
+</div>
+<input type="hidden" id="result_type">
+
 <script>
-    // Function to handle ball results
+    // Function to open the modal for wide, no-ball, bye, leg-bye
     function setBallResult(result) {
-        // Test: Log the result to see if the function is called
-        var striker_batsman_id = $('#striker_batsman_id').val();
-        var non_striker_batsman_id = $('#non_striker_batsman_id').val();
-        var bowler_id = $('#bowler_id').val();
-        var innings_id = $('#innings_id').val();
-        var scoreboard_id = $('#scoreboard_id').val();
+        if (result === 'WD' || result === 'NB' || result === 'BYE' || result === 'LB') {
+            $('#customModal').show(); // Show the modal
+            $('#result_type').val(result); // Store result type
+        } else {
+            sendScoreUpdate(result, null, null); // Handle regular results
+        }
+    }
 
+    // Close the modal when the close button is clicked
+    $('#closeModalBtn').click(function() {
+        $('#customModal').hide(); // Hide modal on close
+    });
 
-        // console.log("Ball Result:", result + "Batsman_id", batsman_id);
-
-        // Prepare the data to send (you can adjust this based on your needs)
-        const data = {
+    // Function to send the AJAX request
+    function sendScoreUpdate(result, additional_runs, run_type) {
+        var formData = {
+            striker_batsman_id: $('#striker_batsman_id').val(),
+            non_striker_batsman_id: $('#non_striker_batsman_id').val(),
+            bowler_id: $('#bowler_id').val(),
+            scoreboard_id: $('#scoreboard_id').val(),
+            innings_id: $('#innings_id').val(),
             ball_result: result,
-            striker_batsman_id: striker_batsman_id,
-            non_striker_batsman_id: non_striker_batsman_id,
+            additional_runs: additional_runs,
+            run_type: run_type,
+            _token: "{{ csrf_token() }}",
 
-            innings_id: innings_id,
-            bowler_id: bowler_id,
-            scoreboard_id: scoreboard_id,
-            _token: '{{ csrf_token() }}' // Include CSRF token for Laravel
+
+            // Include the run type in the request
         };
-
-        // Make AJAX POST request
+        console.log(formData)
+        // $.ajaxSetup({
+        //     headers: {
+        //         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        //     }
+        // });
         $.ajax({
-            url: '{{ route('user.balls.store') }}', // Laravel route
+            url: "{{ route('user.balls.store') }}", // Ensure this is inside Blade template tags
             type: 'POST',
-            data: data,
-            success: function(response) {
-                // Handle success
-                console.log(response.data)
-                $.each(response.data, function(index, scoreboard) {
-                    // alert(scoreboard);
-                });
+            data: formData,
 
-                alert('Ball result updated successfully: ' + response);
+            success: function(response) {
+                alert('Score updated successfully!');
+                $('#customModal').hide();
             },
-            error: function(xhr, status, error) {
-                console.log(xhr.responseText); // Log the error response for more details
-                alert('Error updating ball result: ' + error);
+            error: function(error) {
+                alert('Error updating score!');
             }
         });
     }
+
+    // Handle modal form submission
+    $('#modalSubmitBtn').click(function() {
+        // Get the additional runs and run type
+        var additional_runs = $('#runs').val();
+        var result_type = $('#result_type').val();
+        var run_type = $('input[name="run_type"]:checked').val(); // Get the selected run type
+
+        if (!additional_runs || !run_type) {
+            alert('Please enter additional runs and select a run type');
+            return;
+        }
+
+        // Send score update with additional runs, result type, and run type
+        sendScoreUpdate(result_type, additional_runs, run_type);
+    });
 </script>
+
+
+
+{{-- @include('user.scoreboard.modal') --}}
+
 {{-- @endpush --}}

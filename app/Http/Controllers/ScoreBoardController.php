@@ -92,6 +92,7 @@ class ScoreBoardController extends Controller
         DB::beginTransaction();
         try {
             $model = Score::find($id);
+            // dd($id);
 
             $match = $model->update([
                 'which_team_won_the_toss' => $request->input('which_team_won_the_toss'),
@@ -126,6 +127,7 @@ class ScoreBoardController extends Controller
 
             DB::commit();
             flash('Scoreboard updated successfully.')->success();
+            // return view('user.scoreboard.fields', compact('scoreboard'));
             return response()->json(['status' => 'success'], 200); // Response for AJAX
         } catch (CustomException $e) {
             DB::rollback();

@@ -19,6 +19,7 @@ return new class extends Migration
             $table->tinyInteger('ball_number')->nullable();
             $table->tinyInteger('over_number')->nullable();
             $table->tinyInteger('runs_conceded')->nullable();
+            $table->tinyInteger('extra_runs')->nullable();
             $table->enum('ball_type', ['normal', 'wide', 'no-ball', 'bye', 'leg-bye'])->nullable();
             $table->boolean('is_wicket')->default(0)->nullable();
             $table->foreign('innings_id')->references('id')->on('scores')->onDelete('cascade');

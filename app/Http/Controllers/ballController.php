@@ -83,6 +83,12 @@ class BallController extends Controller
                     $update_non_striker_batsman_strike = PlayerStats::where('scoreboard_id', $request->input('innings_id'))->where('player_id', $request->non_striker_batsman_id)->first();
                     $update_non_striker_batsman_strike->update(['is_on_strike' => 1]);
                 }
+                $update_striker_batsman_runs = PlayerStats::where('scoreboard_id', $request->input('innings_id'))->where('player_id', $request->striker_batsman_id)->first();
+                $total_runs_of_batsman = $update_striker_batsman_runs->runs + $ballResult;
+                if ($update_striker_batsman_runs->is_out) {
+                    throw new CustomException('This is Batsman is out which is on Strike.');
+                }
+                $update_striker_batsman_runs->update(['runs' => $total_runs_of_batsman]);
             }
 
             // Mark the ball as normal delivery
@@ -117,6 +123,7 @@ class BallController extends Controller
             'runs_conceded' => $runs_conceded,
             'is_wicket' => $wicket, // Record if it's a wicket
         ]);
+
 
         // Update the match and scoreboard
         $match = CricketMatch::find($request->input('scoreboard_id'));

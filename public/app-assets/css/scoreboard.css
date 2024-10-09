@@ -108,6 +108,7 @@
             gap: 10px;
         }
 
+
         .action-buttons button {
             padding: 10px;
             font-size: 18px;
@@ -158,3 +159,127 @@
     font-weight: normal;
     /* Normal weight for non-striker */
 }
+ /* Modal styles */
+ .modal {
+     display: none;
+     /* Hidden by default */
+     position: fixed;
+     /* Stay in place */
+     z-index: 1000;
+     /* Sit on top */
+     left: 0;
+     top: 0;
+     width: 100%;
+     /* Full width */
+     height: 100%;
+     /* Full height */
+     overflow: auto;
+     /* Enable scroll if needed */
+     background-color: rgba(0, 0, 0, 0.5);
+     /* Black w/ opacity */
+ }
+
+ /* Modal Content */
+ .modal-content {
+    color:black;
+     background-color: #fefefe;
+     margin: 15% auto;
+     /* 15% from the top and centered */
+     padding: 20px;
+     border: 1px solid #888;
+     width: 300px;
+     /* Could be more or less, depending on screen size */
+     border-radius: 10px;
+     /* Rounded corners */
+ }
+
+ /* Close button */
+ .close {
+     color: #aaa;
+     float: right;
+     font-size: 28px;
+     font-weight: bold;
+ }
+
+ .close:hover,
+ .close:focus {
+     color: black;
+     text-decoration: none;
+     cursor: pointer;
+ }
+
+ .wide-runs {
+     background-color: #d1ecf1;
+     /* Light blue background */
+     color: #0c5460;
+     /* Text color */
+     border: 1px solid #bee5eb;
+     /* Border style */
+     padding: 10px;
+     /* Padding */
+     border-radius: 5px;
+     /* Rounded corners */
+     margin-bottom: 15px;
+     /* Spacing below */
+ }
+
+ .button-details {
+     font-weight: bold;
+     /* Bold text */
+     margin-bottom: 10px;
+     /* Spacing below */
+ }
+
+ .close-btn {
+     cursor: pointer;
+     /* Pointer cursor */
+     float: right;
+     /* Align to the right */
+     font-size: 20px;
+     /* Larger font size */
+     color: #aaa;
+     /* Close button color */
+ }
+
+ .close-btn:hover,
+ .close-btn:focus {
+     color: black;
+     /* Change color on hover */
+     text-decoration: none;
+     /* No underline */
+     cursor: pointer;
+     /* Pointer cursor */
+ }
+
+ .submit-btn {
+     background-color: #007bff;
+     /* Bootstrap primary color */
+     color: white;
+     /* White text */
+     border: none;
+     /* No border */
+     padding: 10px 20px;
+     /* Padding */
+     border-radius: 5px;
+     /* Rounded corners */
+     cursor: pointer;
+     /* Pointer cursor */
+ }
+
+ .submit-btn:hover {
+     background-color: #0056b3;
+     /* Darker shade on hover */
+ }
+ .wide-runs {
+     background-color: #d1ecf1;
+     color: #0c5460;
+     border: 1px solid #bee5eb;
+     padding: 10px;
+     border-radius: 5px;
+     margin-bottom: 15px;
+ }
+
+ .button-details {
+     font-weight: bold;
+     margin-bottom: 10px;
+ }
