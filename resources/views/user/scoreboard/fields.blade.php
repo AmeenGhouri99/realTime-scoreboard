@@ -217,7 +217,7 @@
             <input type="number" id="runs" name="runs" class="form-input" required>
         </div>
 
-        <div class="form-group">
+        <div class="form-group" id="no-ball_fields" style="display: none">
             <label>Run Type</label><br>
             <input type="radio" id="from_bat" name="run_type" value="from_bat" required>
             <label for="from_bat">From Bat</label>
@@ -240,7 +240,35 @@
 <script>
     // Function to open the modal for wide, no-ball, bye, leg-bye
     function setBallResult(result) {
+        // $('#runs').empty();
+        function clearModalInputs() {
+            document.getElementById('runs').value = ''; // Clear the runs input
+            // document.getElementById('ball_extras').value = ''; // Clear the extras input
+        }
         if (result === 'WD' || result === 'NB' || result === 'BYE' || result === 'LB') {
+            clearModalInputs();
+            $('#no-ball_fields').hide();
+
+            if (result === 'NB') {
+                $('#no-ball_fields').show();
+            }
+            // Initialize runs scored to 0
+            let runsScored = 0;
+
+            // Determine runs based on ball type
+            if (result === 'WD' || result === 'NB') {
+                runsScored = 1; // Set initial runs for No Ball or Wide
+                wideRuns.style.display = 'block'; // Show the wide runs container
+                wideRuns.innerHTML = `Wide/No Ball Runs: <strong>${runsScored}</strong>`;
+            } else {
+                wideRuns.style.display = 'none'; // Hide the wide runs container
+            }
+
+            // Set the runs input value to the calculated runs
+            // runsInput.value = 0;
+
+            // Open the modal
+            // modal.style.display = 'block';
             $('#customModal').show(); // Show the modal
             $('#result_type').val(result); // Store result type
         } else {
