@@ -28,112 +28,173 @@ class BallController extends Controller
     }
     public function updateBallCount(Request $request)
     {
-        // Fetch the last ball entry for the specified innings
-        $lastBall = Ball::where('innings_id', $request->input('innings_id'))
-            ->orderBy('created_at', 'desc')
-            ->first();
+        DB::beginTransaction(); // Start a transaction
 
-        $ball_type = "";
-        $runs_conceded = null;
-        $wicket = 0;
+        try {
+            // Fetch the last ball entry for the specified innings
+            $lastBall = Ball::where('innings_id', $request->input('innings_id'))
+                ->orderBy('created_at', 'desc')
+                ->first();
 
-        // Initialize current over number and ball count
-        if ($lastBall) {
-            $currentOverNumber = $lastBall->over_number;
+            $ball_type = "";
+            $runs_conceded = null;
+            $wicket = 0;
 
-            $currentBallCount = $lastBall->ball_number; // Tracks ball count within the over (0 to 5)
-        } else {
-            // If no balls have been bowled yet, initialize the first over and start ball count from 0
-            $currentOverNumber = 1;
-            $currentBallCount = 0; // Start from 0 instead of 1 for the first ball
-        }
-        // dd($currentBallCount);
-
-        // Get the ball result from the request
-        $ballResult = $request->input('ball_result');
-
-        // Handle No-ball (NB) and Wide (WD) cases separately
-        if (in_array($ballResult, ['NB', 'WD'])) {
-            if ($ballResult === 'NB') {
-                $ball_type = 'no-ball';
-                $runs_conceded = 1; // Award one run for no-ball
-            } elseif ($ballResult === 'WD') {
-                $ball_type = 'wide';
-                $runs_conceded = 1; // Award one run for wide
-            }
-            // Note: Ball count doesn't increase for NB or WD
-        } else {
-            // Handle normal deliveries (including OUT, BYE, LB)
-            if ($ballResult === 'OUT') {
-                $wicket = 1; // Increment wicket count
-            } elseif ($ballResult === 'BYE') {
-                $ball_type = 'bye';
-                $runs_conceded = 1;
-            } elseif ($ballResult === 'LB') {
-                $ball_type = 'leg-bye';
-                $runs_conceded = 1;
-            } else {
-                $runs_conceded = $ballResult; // For runs (0, 1, 2, 3, 4, 6)
-                // Switch strike on odd runs
-                if ($ballResult == 1 || $ballResult == 3) {
-                    // Switch strike logic
-                    $update_batsman_strike = PlayerStats::where('scoreboard_id', $request->input('innings_id'))->where('player_id', $request->striker_batsman_id)->first();
-                    $update_batsman_strike->update(['is_on_strike' => 0]);
-
-                    $update_non_striker_batsman_strike = PlayerStats::where('scoreboard_id', $request->input('innings_id'))->where('player_id', $request->non_striker_batsman_id)->first();
-                    $update_non_striker_batsman_strike->update(['is_on_strike' => 1]);
-                }
-                $update_striker_batsman_runs = PlayerStats::where('scoreboard_id', $request->input('innings_id'))->where('player_id', $request->striker_batsman_id)->first();
-                $total_runs_of_batsman = $update_striker_batsman_runs->runs + $ballResult;
-                if ($update_striker_batsman_runs->is_out) {
-                    throw new CustomException('This is Batsman is out which is on Strike.');
-                }
-                $update_striker_batsman_runs->update(['runs' => $total_runs_of_batsman]);
-            }
-
-            // Mark the ball as normal delivery
-            $ball_type = "normal";
             if ($lastBall) {
-                $currentBallCount++;
+                $currentOverNumber = $lastBall->over_number;
+                $currentBallCount = $lastBall->ball_number;
             } else {
-                $currentBallCount;
+                $currentOverNumber = 1;
+                $currentBallCount = 0;
             }
+
+            $ballResult = $request->input('ball_result');
+
+            // Undo logic
+            if ($ballResult === 'undo' && $lastBall) {
+                // Step 1: Adjust PlayerStats
+                $strikerStats = PlayerStats::where('scoreboard_id', $request->input('innings_id'))
+                    ->where('player_id', $lastBall->batsman_id)
+                    ->first();
+
+                $strikerStats->update([
+                    'runs' => $strikerStats->runs - $lastBall->runs_conceded,
+                ]);
+
+                // Step 2: Handle Strike Change if Odd Runs (1 or 3)
+                if ($lastBall->runs_conceded == 1 || $lastBall->runs_conceded == 3) {
+                    $strikerStats->update(['is_on_strike' => 1]); // Reset strike
+                    PlayerStats::where('scoreboard_id', $request->input('innings_id'))
+                        ->where('player_id', $request->non_striker_batsman_id)
+                        ->update(['is_on_strike' => 0]);
+                }
+
+                // Step 3: Undo Wicket if Recorded
+                if ($lastBall->is_wicket) {
+                    PlayerStats::where('scoreboard_id', $request->input('innings_id'))
+                        ->where('player_id', $lastBall->batsman_id)
+                        ->update(['is_out' => 0]);
+                }
+
+                // Step 4: Delete the last ball entry
+                $lastBall->delete();
+
+                DB::commit(); // Commit transaction
+
+                return response()->json(['message' => 'Undo Successful']);
+            }
+
+            // Handle No-ball and Wide
+            $extra_runs = 0;
+            $no_ball_runs_from_bat = false;
+            $runs_from_bye = false;
+            $runs_from_leg_bye = false;
+            $is_wide = false;
+            if ($request->input('additional_runs')) {
+                $extra_runs = $request->input('additional_runs');
+            }
+
+            if (in_array($ballResult, ['NB', 'WD'])) {
+                if ($ballResult === 'NB') {
+                    $ball_type = 'no-ball';
+                    $run_type = $request->input('run_type');
+                    if ($run_type === 'from_bat') {
+                        $no_ball_runs_from_bat = true;
+                        $runs_conceded = $extra_runs;
+                    }
+                } elseif ($ballResult === 'WD') {
+                    $ball_type = 'wide';
+                    $is_wide = true;
+                    // $runs_conceded = ; // One run for wide
+                }
+            } else {
+                // Normal deliveries (including OUT, BYE, LB)
+                if ($ballResult === 'OUT') {
+                    $wicket = 1;
+                } elseif ($ballResult === 'BYE') {
+                    $ball_type = 'bye';
+                    $runs_from_bye = true;
+                } elseif ($ballResult === 'LB') {
+                    $ball_type = 'leg-bye';
+                    $runs_from_leg_bye = true;
+                    // $runs_conceded = 1;
+                } else {
+                    $runs_conceded = $ballResult;
+
+                    // Switch strike for odd runs
+                    if ($ballResult == 1 || $ballResult == 3) {
+                        PlayerStats::where('scoreboard_id', $request->input('innings_id'))
+                            ->where('player_id', $request->striker_batsman_id)
+                            ->update(['is_on_strike' => 0]);
+
+                        PlayerStats::where('scoreboard_id', $request->input('innings_id'))
+                            ->where('player_id', $request->non_striker_batsman_id)
+                            ->update(['is_on_strike' => 1]);
+                    }
+
+                    // Update batsman runs
+                    $batsmanStats = PlayerStats::where('scoreboard_id', $request->input('innings_id'))
+                        ->where('player_id', $request->striker_batsman_id)
+                        ->first();
+                    $total_runs = $batsmanStats->runs + $ballResult;
+
+                    if ($batsmanStats->is_out) {
+                        throw new CustomException('This batsman is out and cannot score runs.');
+                    }
+
+                    $batsmanStats->update(['runs' => $total_runs]);
+                }
+
+                // Normal delivery type
+                $ball_type = "normal";
+
+                if ($lastBall) {
+                    $currentBallCount++;
+                }
+            }
+
+            // Check if over is complete (6 balls bowled)
+            if ($currentBallCount >= 6) {
+                $currentOverNumber++;
+                $currentBallCount = 0;
+            }
+            // dd($runs_conceded);
+            // Save the ball data in the database
+            Ball::create([
+                'innings_id' => $request->input('innings_id'),
+                'ball_type' => $ball_type,
+                'over_number' => $currentOverNumber,
+                'ball_number' => $currentBallCount,
+                'batsman_id' => $request->striker_batsman_id,
+                'bowler_id' => $request->bowler_id,
+                'extra_runs' => $no_ball_runs_from_bat === false || $runs_from_bye  || $runs_from_leg_bye || $is_wide  ? $extra_runs : 0,
+                'runs_conceded' => $no_ball_runs_from_bat || $runs_from_bye === false  || $runs_from_leg_bye === false || $is_wide === false ? $runs_conceded : 0,
+                'is_wicket' => $wicket,
+            ]);
+
+            // Update match and scoreboard
+            $match = CricketMatch::find($request->input('scoreboard_id'));
+            $scoreboard = Score::where('match_id', $request->input('scoreboard_id'))
+                ->where('team_id', $match->batting_team_id)
+                ->with('team', 'match')
+                ->first();
+
+            DB::commit(); // Commit transaction
+
+            return response()->json([
+                'data' => $scoreboard,
+                'message' => 'Ball count updated successfully.',
+            ]);
+        } catch (\Exception $e) {
+            DB::rollBack(); // Rollback transaction in case of error
+
+            return response()->json([
+                'error' => 'An error occurred while updating the ball count.',
+                'message' => $e->getMessage(),
+            ], 500);
         }
-
-        // Handle undo functionality
-        if ($ballResult === 'undo') {
-            $data = Ball::where('innings_id', $request->input('innings_id'))->latest()->orderBy('created_at', 'desc')->first()->delete();
-            return response()->json(['message' => 'Undo Successfully.']);
-        }
-
-        // Check if 6 valid balls have been bowled (i.e., currentBallCount >= 6)
-        if ($currentBallCount >= 6) {
-            $currentOverNumber++; // Move to the next over
-            $currentBallCount = 0; // Reset the ball count after completing an over
-        }
-
-        // Save the ball details in the database
-        Ball::create([
-            'innings_id' => $request->input('innings_id'),
-            'ball_type' => $ball_type, // Ball type (normal, wide, no-ball, etc.)
-            'over_number' => $currentOverNumber, // Current over
-            'ball_number' => $currentBallCount, // Ball number in the over (0 to 5)
-            'batsman_id' => $request->striker_batsman_id,
-            'bowler_id' => $request->bowler_id,
-            'runs_conceded' => $runs_conceded,
-            'is_wicket' => $wicket, // Record if it's a wicket
-        ]);
-
-
-        // Update the match and scoreboard
-        $match = CricketMatch::find($request->input('scoreboard_id'));
-        $scoreboard = Score::where('match_id', $request->input('scoreboard_id'))->where('team_id', $match->batting_team_id)->with('team', 'match')->first();
-
-        return response()->json([
-            'data' => $scoreboard,
-            'message' => 'Ball count updated successfully.'
-        ]);
     }
+
 
 
     public function store(Request $request)

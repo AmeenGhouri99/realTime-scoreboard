@@ -323,10 +323,16 @@
         // Get the additional runs and run type
         var additional_runs = $('#runs').val();
         var result_type = $('#result_type').val();
-        var run_type = $('input[name="run_type"]:checked').val(); // Get the selected run type
-
-        if (!additional_runs || !run_type) {
-            alert('Please enter additional runs and select a run type');
+        var run_type = $('input[name="run_type"]:checked').val();
+        // alert(run_type) // Get the selected run type
+        if (result_type === 'NB') {
+            if (!run_type) {
+                alert('select a run type');
+                return;
+            }
+        }
+        if (!additional_runs) {
+            alert('Please enter additional runs');
             return;
         }
 

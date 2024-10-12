@@ -17,6 +17,7 @@ class Ball extends Model
         'runs_conceded',
         'ball_type',
         'is_wicket',
-        'over_number'
+        'over_number',
+        "extra_runs"
     ];
 }
