@@ -16,6 +16,7 @@ class PlayerStats extends Model
         'is_on_strike',
         'runs',
         'is_out',
+        'ball_faced',
     ];
 
     public function match()

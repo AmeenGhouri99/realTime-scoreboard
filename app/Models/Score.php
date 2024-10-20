@@ -58,4 +58,8 @@ class Score extends Model
     {
         return $this->hasMany(BowlerStats::class, 'innings_id');
     }
+    public function ball(): HasMany
+    {
+        return $this->hasMany(Ball::class, 'innings_id');
+    }
 }

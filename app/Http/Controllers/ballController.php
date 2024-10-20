@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Exceptions\CustomException;
 use App\Helpers\Helper;
 use App\Models\Ball;
+use App\Models\BowlerStats;
 use App\Models\CricketMatch;
 use App\Models\Player;
 use App\Models\PlayerStats;
@@ -44,7 +45,7 @@ class BallController extends Controller
                 $currentOverNumber = $lastBall->over_number;
                 $currentBallCount = $lastBall->ball_number;
             } else {
-                $currentOverNumber = 1;
+                $currentOverNumber = 0;
                 $currentBallCount = 0;
             }
 
@@ -59,7 +60,23 @@ class BallController extends Controller
 
                 $strikerStats->update([
                     'runs' => $strikerStats->runs - $lastBall->runs_conceded,
+                    'ball_faced' => $strikerStats->ball_faced - 1,
                 ]);
+                $bowlerStatsUndo = BowlerStats::where('scoreboard_id', $request->input('innings_id'))
+                    ->where('bowler_id', $lastBall->bowler_id)
+                    ->first();
+                if ($lastBall->ball_type === 'wide' || $lastBall->ball_type === 'no-ball') {
+                    $adding_wide_and_no_ball_run = $lastBall->extra_runs + 1;
+                    $bowlerStatsUndo->update([
+                        'runs_conceded' => $bowlerStatsUndo->runs_conceded - $adding_wide_and_no_ball_run,
+                        // 'overs' => $bowlerStatsUndo->overs - 1,
+                    ]);
+                } else {
+                    $bowlerStatsUndo->update([
+                        'runs_conceded' => $bowlerStatsUndo->runs_conceded - $lastBall->runs_conceded,
+                        'overs' => $bowlerStatsUndo->overs - 1,
+                    ]);
+                }
 
                 // Step 2: Handle Strike Change if Odd Runs (1 or 3)
                 if ($lastBall->runs_conceded == 1 || $lastBall->runs_conceded == 3) {
@@ -87,6 +104,7 @@ class BallController extends Controller
             // Handle No-ball and Wide
             $extra_runs = 0;
             $no_ball_runs_from_bat = false;
+            $from_bat = false;
             $runs_from_bye = false;
             $runs_from_leg_bye = false;
             $is_wide = false;
@@ -107,6 +125,20 @@ class BallController extends Controller
                     $is_wide = true;
                     // $runs_conceded = ; // One run for wide
                 }
+                $wide_and_no_ball_runs = $extra_runs + 1;
+                $bowlerStats = BowlerStats::where('scoreboard_id', $request->input('innings_id'))
+                    ->where('bowler_id', $request->bowler_id)
+                    ->first();
+                $total_runs_bowler_concede = $bowlerStats->runs_conceded + $wide_and_no_ball_runs;
+                // $total_balls_of_bowler = $bowlerStats->overs === null ? 1 : $bowlerStats->overs + 1;
+                // if ($bowlerStats->is_out) {
+                //     throw new CustomException('This batsman is out and cannot score runs.');
+                // }
+
+                $bowlerStats->update([
+                    'runs_conceded' => $total_runs_bowler_concede,
+                    // 'overs' => $total_balls_of_bowler
+                ]);
             } else {
                 // Normal deliveries (including OUT, BYE, LB)
                 if ($ballResult === 'OUT') {
@@ -120,7 +152,10 @@ class BallController extends Controller
                     // $runs_conceded = 1;
                 } else {
                     $runs_conceded = $ballResult;
+                    // Normal delivery type
+                    $ball_type = "normal";
 
+                    $from_bat = true;
                     // Switch strike for odd runs
                     if ($ballResult == 1 || $ballResult == 3) {
                         PlayerStats::where('scoreboard_id', $request->input('innings_id'))
@@ -137,16 +172,30 @@ class BallController extends Controller
                         ->where('player_id', $request->striker_batsman_id)
                         ->first();
                     $total_runs = $batsmanStats->runs + $ballResult;
-
+                    $total_ball_faced = $batsmanStats->ball_faced === null ? 1 : $batsmanStats->ball_faced + 1;
                     if ($batsmanStats->is_out) {
                         throw new CustomException('This batsman is out and cannot score runs.');
                     }
 
-                    $batsmanStats->update(['runs' => $total_runs]);
+                    $batsmanStats->update([
+                        'runs' => $total_runs,
+                        'ball_faced' => $total_ball_faced
+                    ]);
+                    $bowlerStats = BowlerStats::where('scoreboard_id', $request->input('innings_id'))
+                        ->where('bowler_id', $request->bowler_id)
+                        ->first();
+                    $total_runs_bowler_concede = $bowlerStats->runs_conceded + $ballResult;
+                    $total_balls_of_bowler = $bowlerStats->overs === null ? 1 : $bowlerStats->overs + 1;
+                    // if ($bowlerStats->is_out) {
+                    //     throw new CustomException('This batsman is out and cannot score runs.');
+                    // }
+
+                    $bowlerStats->update([
+                        'runs_conceded' => $total_runs_bowler_concede,
+                        'overs' => $total_balls_of_bowler
+                    ]);
                 }
 
-                // Normal delivery type
-                $ball_type = "normal";
 
                 if ($lastBall) {
                     $currentBallCount++;
@@ -168,7 +217,7 @@ class BallController extends Controller
                 'batsman_id' => $request->striker_batsman_id,
                 'bowler_id' => $request->bowler_id,
                 'extra_runs' => $no_ball_runs_from_bat === false || $runs_from_bye  || $runs_from_leg_bye || $is_wide  ? $extra_runs : 0,
-                'runs_conceded' => $no_ball_runs_from_bat || $runs_from_bye === false  || $runs_from_leg_bye === false || $is_wide === false ? $runs_conceded : 0,
+                'runs_conceded' => $from_bat || $no_ball_runs_from_bat || $runs_from_bye === false  || $runs_from_leg_bye === false || $is_wide === false ? $runs_conceded : 0,
                 'is_wicket' => $wicket,
             ]);
 
@@ -176,13 +225,46 @@ class BallController extends Controller
             $match = CricketMatch::find($request->input('scoreboard_id'));
             $scoreboard = Score::where('match_id', $request->input('scoreboard_id'))
                 ->where('team_id', $match->batting_team_id)
-                ->with('team', 'match')
+                ->with(['team', 'match', 'ball'])
                 ->first();
 
-            DB::commit(); // Commit transaction
+            $ball_result = $scoreboard->ball()->where('innings_id', $scoreboard->id)->get();
+
+            if ($ball_result->isNotEmpty()) {
+                // Use filter to count 'no-ball' and 'wide' balls
+                $total_no_balls = $ball_result->where('ball_type', 'no-ball')->count();
+                $total_wide_balls = $ball_result->where('ball_type', 'wide')->count();
+                // $current_over_stats = $ball_result->where('over_number', 0)->get();
+
+
+                // Sum 'runs_conceded' and 'extra_runs' from the individual balls
+                $total_runs_conceded = $ball_result->sum('runs_conceded');
+                $total_extra_runs = $ball_result->sum('extra_runs'); // Make sure this field exists
+                $total_wickets = $ball_result->where('is_wicket', 1)->count(); // Assuming 'is_wicket' is boolean
+
+                // Calculate the total overs done by counting balls (assuming 6 balls per over)
+                foreach ($ball_result as $ball) {
+                    $ball_number = $ball->latest()->first()->ball_number;
+                    $overs_done = $ball->latest()->first()->over_number;
+                }
+                // $balls_done = $ball_result->latest()->first()->ball_number;
+                //  dd($balls_done);
+                $total_overs_done = "{$overs_done}.{$ball_number}";
+
+                // Calculate the total scores
+                $total_scores = $total_runs_conceded + $total_extra_runs + $total_wide_balls + $total_no_balls;
+            }
+            // Commit the transaction and return the response
+            DB::commit();
 
             return response()->json([
                 'data' => $scoreboard,
+                'total_runs' => $total_scores,
+                'total_wickets' => $total_wickets,
+                'total_overs' => $match->total_overs,
+                'total_overs_done' => $total_overs_done,
+                // 'current_over_stats' => $current_over_stats,
+                'extra_runs' => $total_extra_runs + $total_no_balls + $total_wide_balls,
                 'message' => 'Ball count updated successfully.',
             ]);
         } catch (\Exception $e) {
