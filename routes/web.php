@@ -64,7 +64,7 @@ Route::group(['middleware' => ['auth:sanctum', 'user'], 'prefix' => 'user', 'as'
     // Route::get('manage_match/{id}', [MatchController::class, 'manageMatch']);
     Route::resource('matches', MatchController::class);
     Route::get('/manage-match/{id}', [MatchController::class, 'create'])->name('manage.match');
-    Route::get('/score-board/{id}', [ScoreBoardController::class, 'scoreBoardCreate'])->name('scoreboard.create');
+    Route::get('/score-board/{id}/{is_out?}/{pervious_player_id?}', [ScoreBoardController::class, 'scoreBoardCreate'])->name('scoreboard.create');
     Route::put('score-board/{id}', [ScoreBoardController::class, 'scoreBoardUpdate'])->name('scoreboard.update');
     Route::get('teams/teamsOfTournament/{id}', [TeamController::class, 'teamsOfTournament'])->name('teams.teamsOfTournament');
 

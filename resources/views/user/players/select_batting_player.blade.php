@@ -10,7 +10,7 @@
                     {{-- Form --}}
                     {{-- @dd($scoreboard->id) --}}
                     {{ html()->modelForm($scoreboard, 'PUT', route('user.scoreboard.update', $scoreboard->id))->attribute('enctype', 'multipart/form-data')->id('scoreboardForm')->open() }}
-
+                    <input type="hidden" value="{{ $previous_player }}" name="previous_player_id">
                     <table class="table">
                         <thead>
                             <tr>
