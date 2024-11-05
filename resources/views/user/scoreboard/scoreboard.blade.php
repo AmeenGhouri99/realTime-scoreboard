@@ -117,7 +117,7 @@
             $('#batting_team_name,#batting_team').text(eventData.batting_team_name)
 
 
-            console.log(eventData.scoreboard.bowler_ball_faced);
+            console.log(eventData);
 
         };
 
