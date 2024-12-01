@@ -20,7 +20,7 @@ class ScoreBoardController extends Controller
 {
     public function scoreBoardCreate($id, $is_out = false, $previous_player_id = null,)
     {
-        // dd($id);
+        // dd($is_out, $previous_player_id);
         $match = CricketMatch::with('team1', 'team2', 'tournament')->find($id);
         $batting_team_name = $match->battingTeam->find($match->batting_team_id)->name;
 
@@ -57,11 +57,29 @@ class ScoreBoardController extends Controller
 
             $team_id = $match->batting_team_id;
             $players = Player::where('team_id', $team_id)->get();
+            $player_stats = PlayerStats::whereIn('player_id', $players->pluck('id'))->get();
+            $batsman_on_pitch_id = '';  // Default value
+
+            // Check if player1_id is not null and assign it to batsman_on_pitch
+            if (isset($scoreboard->player1_id) && $scoreboard->player1_id !== null) {
+                $batsman_on_pitch_id = $scoreboard->player1_id;
+            }
+
+            // Check if player2_id is not null and assign it to batsman_on_pitch
+            if (isset($scoreboard->player2_id) && $scoreboard->player2_id !== null) {
+                // If player1_id is already assigned, prefer player2_id over it, or you can handle it based on your logic
+                if (empty($batsman_on_pitch)) {
+                    $batsman_on_pitch_id = $scoreboard->player2_id;
+                }
+            }
+
+
+            // dd($player_stats);
             $previous_player = null;
             if ($is_out) {
                 $previous_player = $previous_player_id;
             }
-            return view('user.players.select_batting_player', compact('scoreboard', 'players', 'team_id', 'count_batsman', 'already_on_strikes', 'previous_player'));
+            return view('user.players.select_batting_player', compact('scoreboard', 'players', 'team_id', 'count_batsman', 'already_on_strikes', 'previous_player', 'is_out', 'player_stats', 'batsman_on_pitch_id'));
         }
         // dd($match); // Fetch all teams
         return view('user.scoreboard.fields', compact('scoreboard'));
@@ -105,24 +123,28 @@ class ScoreBoardController extends Controller
             // Handle null player1_id or player2_id
             if ($model->player1_id === null || $model->player2_id === null) {
 
-                $position = $model->player1_id === null ? 'player1_id' : 'player2_id';
+                // $position = $model->player1_id === null ? 'player1_id' : 'player2_id';
                 $playerChangeLog = PlayerChangeLog::where('scoreboard_id', $id)
                     ->where('previous_player_id', $request->previous_player_id)
                     ->first();
+                // dd($playerChangeLog);
                 if ($playerChangeLog) {
 
-                    if ($position === 'player1_id') {
+                    if ($model->player1_id === null) {
+
                         $playerChangeLog->update([
+                            'position' => 'player1_id',
                             'new_player_id' => $request->player_id[0],
                         ]);
                     } else {
                         $playerChangeLog->update([
+                            'position' => 'player2_id',
                             'new_player_id' => $request->player_id[1],
                         ]);
                     }
                     // dd($position);
                     // Find the PlayerChangeLog for the previous player
-                    $model->update([$position => $request->input('new_player_id')]);
+                    // $model->update([$position => $request->input('new_player_id')]);
                 }
             }
             $match = $model->update([
@@ -348,6 +370,7 @@ class ScoreBoardController extends Controller
         flush();
     }
     public function scoreTicker()
+
     {
         return view('user.scoreboard.scoreboard');
     }

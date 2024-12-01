@@ -18,6 +18,9 @@ class Ball extends Model
         'ball_type',
         'is_wicket',
         'over_number',
-        "extra_runs"
+        "extra_runs",
+        "fielder_1_id",
+        "fielder_2_id",
+        'out_type',
     ];
 }

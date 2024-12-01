@@ -98,7 +98,17 @@ class BallController extends Controller
                         ->where('team_id', $match_table->batting_team_id)
                         ->with(['team', 'match', 'ball'])
                         ->first();
-                    $scoreboard_update->update(['player1_id' => $out_player->batsman_id]);
+                    $player_change_logs = PlayerChangeLog::where('scoreboard_id', $request->input('innings_id'))->orderBy('created_at', 'desc')
+                        ->first();
+                    // dd($player_change_logs);
+                    if ($player_change_logs->new_player_id === $scoreboard_update->player1_id) {
+                        $scoreboard_update->update(['player1_id' => $player_change_logs->previous_player_id]);
+                    } else {
+                        $scoreboard_update->update(['player2_id' => $player_change_logs->previous_player_id]);
+                    }
+                    $player_change_logs->delete();
+
+                    // $scoreboard_update->update(['player1_id' => $out_player->batsman_id]);
                 }
                 // add the out batsman_id again in the scoreboard table
 
@@ -170,10 +180,12 @@ class BallController extends Controller
                     // $scoreboard_update->update(['player1_id' => $out_player->batsman_id]);
                     // Log the change
                     // dd($request->striker_batsman_id  . 'dd' . $getting_batsman_data->player1_id . $getting_batsman_data->player2_id);
-                    if ($request->striker_batsman_id === $getting_batsman_data->player1_id) {
+                    if ($request->striker_batsman_id == $getting_batsman_data->player1_id) {
                         $position = 'player1_id';
+                        // $getting_batsman_data->update(['player1_id' => null]);
                     } else {
                         $position = 'player2_id';
+                        // $getting_batsman_data->update(['player2_id' => null]);
                     }
                     PlayerChangeLog::create([
                         'scoreboard_id' => $request->input('innings_id'),
@@ -182,6 +194,9 @@ class BallController extends Controller
                         // Set null here since we don't have a new player yet
                         'position' => $position,
                     ]);
+                    PlayerStats::where('scoreboard_id', $request->input('innings_id'))
+                        ->where('player_id', $request->striker_batsman_id)
+                        ->update(['is_on_strike' => 0, 'is_out' => 1]);
                 } elseif ($ballResult === 'BYE') {
                     $ball_type = 'bye';
                     $runs_from_bye = true;
@@ -190,6 +205,7 @@ class BallController extends Controller
                     $runs_from_leg_bye = true;
                     // $runs_conceded = 1;
                 } else {
+                    // dd('ko');
                     // dd($wicket);
                     $runs_conceded = $ballResult;
                     // Normal delivery type
@@ -211,29 +227,22 @@ class BallController extends Controller
                     $batsmanStats = PlayerStats::where('scoreboard_id', $request->input('innings_id'))
                         ->where('player_id', $request->striker_batsman_id)
                         ->first();
-                    $total_runs = $batsmanStats->runs + $ballResult;
-                    $total_ball_faced = $batsmanStats->ball_faced === null ? 1 : $batsmanStats->ball_faced + 1;
-                    if ($batsmanStats->is_out) {
-                        throw new CustomException('This batsman is out and cannot score runs.');
+                    $total_runs = '';
+                    if ($batsmanStats) {
+                        $total_runs = $batsmanStats->runs + $ballResult;
+
+                        $total_ball_faced = $batsmanStats->ball_faced === null ? 1 : $batsmanStats->ball_faced + 1;
+                        if ($batsmanStats->is_out) {
+                            throw new CustomException('This batsman is out and cannot score runs.');
+                        }
+
+                        $batsmanStats->update([
+                            'runs' => $total_runs,
+                            'ball_faced' => $total_ball_faced
+                        ]);
+                    } else {
+                        $total_runs = $ballResult;
                     }
-
-                    $batsmanStats->update([
-                        'runs' => $total_runs,
-                        'ball_faced' => $total_ball_faced
-                    ]);
-                    $bowlerStats = BowlerStats::where('scoreboard_id', $request->input('innings_id'))
-                        ->where('bowler_id', $request->bowler_id)
-                        ->first();
-                    $total_runs_bowler_concede = $bowlerStats->runs_conceded + $ballResult;
-                    $total_balls_of_bowler = $bowlerStats->overs === null ? 1 : $bowlerStats->overs + 1;
-                    // if ($bowlerStats->is_out) {
-                    //     throw new CustomException('This batsman is out and cannot score runs.');
-                    // }
-
-                    $bowlerStats->update([
-                        'runs_conceded' => $total_runs_bowler_concede,
-                        'overs' => $total_balls_of_bowler
-                    ]);
                 }
 
 
@@ -319,7 +328,7 @@ class BallController extends Controller
                 // Calculate the total scores
                 $total_scores = $total_runs_conceded + $total_extra_runs + $total_wide_balls + $total_no_balls;
                 if ($is_out) {
-                    if ($scoreboard->player1_id === $request->striker_batsman_id) {
+                    if ($scoreboard->player1_id == $request->striker_batsman_id) {
                         $scoreboard->update(['player1_id' => null]);
                     } else {
                         $scoreboard->update(['player2_id' => null]);

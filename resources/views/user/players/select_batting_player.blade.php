@@ -11,6 +11,7 @@
                     {{-- @dd($scoreboard->id) --}}
                     {{ html()->modelForm($scoreboard, 'PUT', route('user.scoreboard.update', $scoreboard->id))->attribute('enctype', 'multipart/form-data')->id('scoreboardForm')->open() }}
                     <input type="hidden" value="{{ $previous_player }}" name="previous_player_id">
+                    <input type="hidden" value="{{ $is_out }}" name="is_out">
                     <table class="table">
                         <thead>
                             <tr>
@@ -22,11 +23,21 @@
                         </thead>
                         <tbody>
                             @foreach ($players as $player)
+                                @php
+                                    $playerStat = $player_stats->firstWhere('player_id', $player->id);
+                                    $isPlayerOut = $playerStat?->is_out == 1;
+
+                                @endphp
+                                {{-- @dd($batsman_on_pitch_id) --}}
                                 <tr>
                                     <td>
-                                        <input type="checkbox" name="player_id[]" value="{{ $player->id }}"
-                                            class="player-checkbox"
-                                            {{ in_array($player->id, $already_on_strikes) ? 'checked' : '' }}>
+                                        @if ($isPlayerOut)
+                                            <button class="btn btn-danger btn-sm"> OUT</button>
+                                        @else
+                                            <input type="checkbox" name="player_id[]" value="{{ $player->id }}"
+                                                class="player-checkbox"
+                                                {{ $player->id === $batsman_on_pitch_id ? 'checked' : '' }}>
+                                        @endif
                                     </td>
                                     <td>{{ $loop->iteration }}</td>
                                     <td>{{ $player->name }}</td>
@@ -74,12 +85,22 @@
         </div>
     </div>
 @endsection
-
 @push('js_scripts')
     <script>
         $(document).ready(function() {
             var maxStrikesPlayers = {{ $count_batsman }};
             var selectedPlayers = [];
+
+            // Disable players who are out
+            @foreach ($players as $player)
+                @php
+                    $playerStat = $player_stats->firstWhere('player_id', $player->id);
+                    $isPlayerOut = $playerStat?->is_out == 1;
+                @endphp
+                @if ($isPlayerOut)
+                    $('input[value="{{ $player->id }}"]').prop('disabled', true);
+                @endif
+            @endforeach
 
             // Intercept form submission
             $('#scoreboardForm').on('submit', function(event) {
@@ -123,18 +144,32 @@
                         $('#playerOnStrike').append('<option value="' + playerId + '">' +
                             playerName + '</option>');
                     });
-
-                    // Optionally show modal at this stage if needed
                 } else {
-                    // Enable all checkboxes if less than required are selected
+                    // Enable all checkboxes, but make sure out players remain disabled
                     $('input.player-checkbox').prop('disabled', false);
+
+                    // Disable players who are out again
+                    $('input.player-checkbox').each(function() {
+                        var playerId = $(this).val();
+                        if ($(this).prop('checked') === false && !selectedPlayers.includes(
+                                playerId)) {
+                            $(this).prop('disabled', function() {
+                                var playerStat = @json($player_stats->keyBy('player_id'));
+                                return playerStat[playerId]?.is_out === 1;
+                            });
+                        }
+                    });
                 }
             });
 
-            // Initially enable all checkboxes if no players are selected
-            if (selectedPlayers.length < maxStrikesPlayers) {
-                $('input.player-checkbox').prop('disabled', false);
-            }
+            // Initially, disable checkboxes for out players
+            $('input.player-checkbox').each(function() {
+                var playerId = $(this).val();
+                var playerStat = @json($player_stats->keyBy('player_id'));
+                if (playerStat[playerId]?.is_out === 1) {
+                    $(this).prop('disabled', true);
+                }
+            });
         });
     </script>
 @endpush

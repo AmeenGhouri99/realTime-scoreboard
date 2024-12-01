@@ -16,15 +16,21 @@ return new class extends Migration
             $table->unsignedBigInteger('innings_id')->nullable();
             $table->unsignedBigInteger('bowler_id')->nullable();
             $table->unsignedBigInteger('batsman_id')->nullable();
+            $table->unsignedBigInteger('fielder_1_id')->nullable(); // For caught or run-out
+            $table->unsignedBigInteger('fielder_2_id')->nullable(); // For run-out throw
             $table->tinyInteger('ball_number')->nullable();
             $table->tinyInteger('over_number')->nullable();
             $table->tinyInteger('runs_conceded')->nullable();
+
             $table->tinyInteger('extra_runs')->nullable();
             $table->enum('ball_type', ['normal', 'wide', 'no-ball', 'bye', 'leg-bye'])->nullable();
             $table->boolean('is_wicket')->default(0)->nullable();
+            $table->enum('out_type', ['bowled', 'caught', 'run_out', 'lbw', 'stumped', 'hit_wicket', 'retired_hurt'])->nullable();
             $table->foreign('innings_id')->references('id')->on('scores')->onDelete('cascade');
             $table->foreign('bowler_id')->references('id')->on('players')->onDelete('cascade');
             $table->foreign('batsman_id')->references('id')->on('players')->onDelete('cascade');
+            $table->foreign('fielder_1_id')->references('id')->on('players')->onDelete('cascade');
+            $table->foreign('fielder_2_id')->references('id')->on('players')->onDelete('cascade');
             $table->timestamps();
         });
     }
