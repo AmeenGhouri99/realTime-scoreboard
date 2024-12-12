@@ -33,7 +33,7 @@
     <input type="hidden" id="striker_batsman_id">
     <input type="hidden" id="non_striker_batsman_id">
     <input type="hidden" name="scoreboard_id" id="scoreboard_id" value="{{ request()->id }}">
-
+    {{-- @dd($scoreboard) --}}
     <input type="hidden" name="innings_id" id="innings_id" value="{{ $scoreboard->id }}">
     <input type="hidden" name="innings_id" id="bowler_id" value="{{ $scoreboard->bowler_id }}">
     <!-- Players Info Section -->

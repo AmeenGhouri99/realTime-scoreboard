@@ -52,6 +52,9 @@ Route::group(['middleware' => ['auth:sanctum', 'user'], 'prefix' => 'user', 'as'
     // Tournament routes
     Route::resource('tournaments', TournamentController::class);
     Route::resource('teams', TeamController::class);
+    Route::get('add_tournament_team/{id}', [TeamController::class, 'addTeam'])->name('add_tournament_teams');
+    Route::resource('match_teams', TeamController::class);
+
     Route::get('team/players/{id}', [PlayerController::class, 'index'])->name('players.index');
     Route::get('players/edit/{id}', [PlayerController::class, 'edit'])->name('players.edit');
     Route::delete('players/delete/{id}', [PlayerController::class, 'destroy'])->name('players.delete');

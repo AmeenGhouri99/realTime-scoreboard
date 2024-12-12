@@ -12,7 +12,7 @@
                         </div>
                         <div class="col-sm-6 text-end">
                             <a class="dt-button create-new btn btn-primary content-end"
-                                href="{{ route('user.add_tournament_teams', request()->id) }}"><i data-feather='plus'></i></a>
+                                href="{{ route('user.teams.addTeams', request()->id) }}"><i data-feather='plus'></i></a>
                         </div>
                     </div>
 
@@ -26,29 +26,51 @@
                                     <tr>
                                         <th>Sr#</th>
                                         <th>Tournament Name</th>
-                                        <th>Team Name</th>
-                                        {{-- <th>Team 2</th> --}}
+                                        <th>Team 1</th>
+                                        <th>Team 2</th>
                                         <th>Action</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @foreach ($teams as $team)
+                                    @foreach ($matches as $match)
                                         <tr>
                                             <td>{{ $loop->iteration }}</td>
                                             {{-- <td>{{ $team->Team1Match }}</td> --}}
                                             <td>
-                                                {{ $team->tournament->name }}
+                                                {{ $match->tournament->name }}
                                             </td>
                                             <td>
-                                                {{ $team->name }}
+                                                {{ $match->team1->name }}
+                                                <br>
+
+                                                Players: {{ $match->team1->teamPlayers->count() }}
+                                                <br>
+
+                                                Add More
+                                                <a href="{{ route('user.players.index', $match->team1->id) }}"><i
+                                                        data-feather='plus-circle'></i></a>
                                             </td>
                                             <td>
-                                                <div class="row">
-                                                    <div class="col-3"><a
-                                                            href="{{ route('user.teams.update', $team->id) }}"
-                                                            class="btn btn-primary btn-sm">Edit</a>
-                                                    </div>
-                                                </div>
+                                                {{ $match->team2->name }}
+
+                                                <br>
+                                                Players: {{ $match->team2->teamPlayers->count() }}
+                                                <br>
+                                                Add More
+                                                <a href="{{ route('user.players.index', $match->team2->id) }}"><i
+                                                        data-feather='plus-circle'></i></a>
+                                            </td>
+                                            <td>
+                                                {{-- <a href="{{ route('user.players.create', $match->id) }}"
+                                                    class="btn btn-primary btn-sm">
+                                                    Add Players</a> --}}
+                                                <a href="{{ route('user.manage.match', $match->id) }}"
+                                                    class="btn btn-success btn-sm">
+                                                    Match</a>
+
+                                                <a href="{{ route('user.scoreboard.create', $match->id) }}"
+                                                    class="btn btn-primary btn-sm">
+                                                    ScoreBoard</a>
                                             </td>
                                         </tr>
                                     @endforeach

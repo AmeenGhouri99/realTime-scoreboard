@@ -22,6 +22,9 @@ class ScoreBoardController extends Controller
     {
         // dd($is_out, $previous_player_id);
         $match = CricketMatch::with('team1', 'team2', 'tournament')->find($id);
+        // dd($id . $match->batting_team_id);
+        $scoreboard = Score::where('match_id', $id)->where('team_id', $match->batting_team_id)->with('team', 'match')->first();
+        // dd($scoreboard);
         $batting_team_name = $match->battingTeam->find($match->batting_team_id)->name;
 
         // Determine the bowling team based on which team is not the batting team
@@ -30,7 +33,6 @@ class ScoreBoardController extends Controller
         } else {
             $bowling_team_id = $match->team1->id;  // team1 is the bowling team
         }
-        $scoreboard = Score::where('match_id', $match->id)->where('team_id', $match->batting_team_id)->with('team', 'match')->first();
         if ($scoreboard && (empty($scoreboard->player1_id) || empty($scoreboard->player2_id) || empty($scoreboard->bowler_id))) {
             $count_batsman = 2;  // Set default value to zero
             $already_on_strikes = [];  // List to store the batsmen already on strike
