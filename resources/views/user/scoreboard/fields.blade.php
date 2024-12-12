@@ -26,6 +26,8 @@
     <div class="score-section">
         <h1><span id="batting_team_score"></span>/<span id="batting_team_out"></span> <small>(<span
                     id="running_over"></span>)</small></h1>
+        <h1><span id="batting_team_score"></span>/<span id="batting_team_out"></span> <small>(<span
+                    id="running_over"></span>)</small></h1>
         <p>CRR: 20.57 Projected Score: 41 (at 20.57 RPO)</p>
     </div>
     {{-- <span id="first_player_runs"></span> --}}
@@ -42,17 +44,21 @@
         <!-- Player 1 (Batsman 1) -->
         <div class="player">
             <span id="first_player_name" class="player-name">
-                {{ $scoreboard->player1->name }}
-            </span>
-            <p id="player1_stats"></p>
+                <span id="first_player_name" class="player-name">
+                    {{ $scoreboard->player1->name }}
+                </span>
+                <p id="player1_stats"></p>
+                <p id="player1_stats"></p>
         </div>
 
         <!-- Player 2 (Batsman 2) -->
         <div class="player">
             <span id="second_player_name" class="player-name">
-                {{ $scoreboard->player2->name }}
-            </span>
-            <p id="player2_stats"></p>
+                <span id="second_player_name" class="player-name">
+                    {{ $scoreboard->player2->name }}
+                </span>
+                <p id="player2_stats"></p>
+                <p id="player2_stats"></p>
         </div>
     </div>
 
@@ -60,6 +66,7 @@
     <!-- Bowler Info Section -->
     <div class="players-info">
         <div class="player">
+            <span class="text-secondary" id="bowler_name"></span>
             <span class="text-secondary" id="bowler_name"></span>
             <p>0.1-0-0-1</p>
             <div class="bowler-info">
@@ -129,6 +136,7 @@
         {{-- </form> --}}
     </div>
 </div>
+
 
 <input type="hidden" id="result_type">
 
@@ -244,6 +252,61 @@
         // Send score update with additional runs, result type, and run type
         sendScoreUpdate(result_type, additional_runs, run_type);
     });
+</script>
+<script>
+    var sseSource = new EventSource("/scoreBoard/12");
+
+    sseSource.onmessage = function(event) {
+        let eventData = JSON.parse(event.data)
+        $('#first_player_name').text(eventData.player1 ?? "Unknown Player");
+        $('#second_player_name').text(eventData.player2 ?? "Unknown Player");
+
+
+        // $('#batting_team_name').text(eventData.batting_team_name)
+        $('#player1_stats').text(eventData.player1_stats ?? 0)
+        $('#first_player_ball_faced').text(eventData.player1_ball_faced ?? 0)
+        $('#player2_stats').text(eventData.player2_stats ?? 0)
+        $('#second_player_ball_faced').text(eventData.player2_ball_faced ?? 0)
+        $('#batting_team_score').text(eventData.total_runs ?? 0)
+        $('#batting_team_out').text(eventData.total_wickets ?? 0)
+        $('#running_over').text(eventData.total_overs_done ?? 0)
+        $('#total_overs').text(eventData.data.total_overs ?? 0)
+        $('#extras').text(eventData.scoreboard.extra ?? 0)
+        $('#bowler_name').text(eventData.bowler_name ?? "Unknown Bowler")
+        $('#bowler_runs').text(eventData.scoreboard.bowler_runs ?? 0)
+        $('#bowler_overs').text(eventData.scoreboard.bowler_overs ?? 0)
+        $('#bowler_ball_faced, #current_over_balls').text(eventData.scoreboard.bowler_ball_faced ?? 0)
+        $('#target').text(eventData.target)
+        $('#bowling_team_name').text(eventData.bowling_team_name)
+        $('#target_message').text(eventData.target_message)
+        $('#bowler_wickets').text(eventData.scoreboard.bowler_wickets ?? 0)
+        $('#batting_team_name,#batting_team').text(eventData.batting_team_name)
+        $('#striker_batsman_id').val(eventData.striker_player_id)
+        $('#non_striker_batsman_id').val(eventData.non_striker_player_id)
+
+        console.log(eventData);
+        // Highlight the striker
+        const strikerId = eventData.striker_player_id; // Ensure this ID is provided by the backend
+        if (strikerId == eventData.player1_id) {
+            $('#first_player_name').addClass('text-warning').removeClass('text-secondary');
+            $('#second_player_name').addClass('text-secondary').removeClass('text-warning');
+        } else if (strikerId == eventData.player2_id) {
+            $('#second_player_name').addClass('text-warning').removeClass('text-secondary');
+            $('#first_player_name').addClass('text-secondary').removeClass('text-warning');
+        }
+
+    };
+
+    sseSource.onerror = function(event) {
+        if (sseSource.readyState === EventSource.CLOSED) {
+            console.log("Attempting to reconnect...");
+            establishSSEConnection();
+        }
+    };
+
+    function establishSSEConnection() {
+        var sseSource = new EventSource("/scoreBoard/12");
+    }
 </script>
 <script>
     var sseSource = new EventSource("/scoreBoard/12");
