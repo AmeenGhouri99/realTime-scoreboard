@@ -19,7 +19,7 @@ class TeamsOfMatchController extends Controller
         $teams = Team::where('tournament_id', $id)->with('tournament', 'Team1Match', 'Team2Match')->get();
         return view('user.match_between_teams.index', compact('teams'));
     }
-    public function teamsOfTournament($id)
+    public function matchesBetweenTeams($id)
     {
         $teams = Team::where('tournament_id', $id)->with('tournament', 'Team1Match', 'Team2Match', 'teamPlayers')->get();
         $matches = CricketMatch::with(['team1', 'team2', 'tournament' => function ($query) {
@@ -68,7 +68,7 @@ class TeamsOfMatchController extends Controller
             return back();
         }
     }
-    public function addTeamsToTournament($id)
+    public function addTeamsForMatch($id)
     {
         $tournament = Tournament::find($id);
         $teams = Team::where('tournament_id', $id)->pluck('name', 'id');

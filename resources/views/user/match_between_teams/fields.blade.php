@@ -1,8 +1,8 @@
  <div class="row">
      <div class="col-xl-3 col-sm-6 col-12 mb-2 mb-xl-0">
-         <label for="name">Team 1
+         <label for="name">select Two Teams Here
              (-)) </span></label>
-         {{ html()->text('team1_name')->class('form-control form-control-sm')->placeholder('Enter Team 1 Name') }}
+         {{ html()->select('team_id', $teams)->class('form-control form-control-sm')->placeholder('Enter Team 1 Name') }}
      </div>
      <div class="col-xl-3 col-sm-6 col-12 mb-2 mb-xl-0">
          <label for="name">Team 2

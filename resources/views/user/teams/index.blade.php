@@ -12,7 +12,10 @@
                         </div>
                         <div class="col-sm-6 text-end">
                             <a class="dt-button create-new btn btn-primary content-end"
-                                href="{{ route('user.add_tournament_teams', request()->id) }}"><i data-feather='plus'></i></a>
+                                href="{{ route('user.teams.matchesBetweenTeams', request()->id) }}">Matches</a>
+                            <a class="dt-button create-new btn btn-primary content-end"
+                                href="{{ route('user.add_tournament_teams', request()->id) }}"><i
+                                    data-feather='plus'></i></a>
                         </div>
                     </div>
 

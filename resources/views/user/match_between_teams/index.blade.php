@@ -12,7 +12,8 @@
                         </div>
                         <div class="col-sm-6 text-end">
                             <a class="dt-button create-new btn btn-primary content-end"
-                                href="{{ route('user.teams.addTeams', request()->id) }}"><i data-feather='plus'></i></a>
+                                href="{{ route('user.teams.addTeamsForMatch', request()->id) }}"><i
+                                    data-feather='plus'></i></a>
                         </div>
                     </div>
 

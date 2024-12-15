@@ -89,7 +89,7 @@ class BallController extends Controller
 
                 // Step 3: Undo Wicket if Recorded
                 if ($lastBall->is_wicket) {
-                    $out_player = PlayerStats::where('scoreboard_id', $request->input('innings_id'))
+                    // $out_player = PlayerStats::where('scoreboard_id', $request->input('innings_id'))
                     $out_player = PlayerStats::where('scoreboard_id', $request->input('innings_id'))
                         ->where('player_id', $lastBall->batsman_id)
                         ->update(['is_out' => 0]);

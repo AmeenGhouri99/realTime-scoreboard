@@ -9,6 +9,7 @@ use App\Http\Controllers\MatchController;
 use App\Http\Controllers\PlayerController;
 use App\Http\Controllers\ScoreBoardController;
 use App\Http\Controllers\TeamController;
+use App\Http\Controllers\TeamsOfMatchController;
 use App\Http\Controllers\TournamentController;
 
 Route::get('/', function () {
@@ -53,7 +54,9 @@ Route::group(['middleware' => ['auth:sanctum', 'user'], 'prefix' => 'user', 'as'
     Route::resource('tournaments', TournamentController::class);
     Route::resource('teams', TeamController::class);
     Route::get('add_tournament_team/{id}', [TeamController::class, 'addTeam'])->name('add_tournament_teams');
-    Route::resource('match_teams', TeamController::class);
+    Route::get('teams/teamsOfTournament/{id}', [TeamController::class, 'teamsOfTournament'])->name('teams.teamsOfTournament');
+    Route::resource('teams_match', TeamsOfMatchController::class);
+    Route::get('teams/matchesBetweenTeams/{id}', [TeamsOfMatchController::class, 'matchesBetweenTeams'])->name('teams.matchesBetweenTeams');
 
     Route::get('team/players/{id}', [PlayerController::class, 'index'])->name('players.index');
     Route::get('players/edit/{id}', [PlayerController::class, 'edit'])->name('players.edit');
@@ -69,10 +72,10 @@ Route::group(['middleware' => ['auth:sanctum', 'user'], 'prefix' => 'user', 'as'
     Route::get('/manage-match/{id}', [MatchController::class, 'create'])->name('manage.match');
     Route::get('/score-board/{id}/{is_out?}/{pervious_player_id?}', [ScoreBoardController::class, 'scoreBoardCreate'])->name('scoreboard.create');
     Route::put('score-board/{id}', [ScoreBoardController::class, 'scoreBoardUpdate'])->name('scoreboard.update');
-    Route::get('teams/teamsOfTournament/{id}', [TeamController::class, 'teamsOfTournament'])->name('teams.teamsOfTournament');
+    // Route::get('teams/teamsOfTournament/{id}', [TeamsOfMatchController::class, 'teamsOfTournament'])->name('teams.teamsOfTournament');
 
-    Route::get('teams/teamsOfTournament/{id}', [TeamController::class, 'teamsOfTournament'])->name('teams.teamsOfTournament');
-    Route::get('teams/addTeams/{id}', [TeamController::class, 'addTeamsToTournament'])->name('teams.addTeams');
+    // Route::get('teams/teamsOfTournament/{id}', [TeamController::class, 'teamsOfTournament'])->name('teams.teamsOfTournament');
+    Route::get('teams/addTeamsForMatch/{id}', [TeamsOfMatchController::class, 'addTeamsForMatch'])->name('teams.addTeamsForMatch');
 });
 Route::group(['middleware' => ['auth:sanctum', 'admin'], 'prefix' => 'admin', 'as' => 'admin.'], function () {
     // Route::resource('users', AdminUserController::class);
