@@ -11,14 +11,14 @@
                         <li>Below is the Creating Teams details</li>
                         <li></li>
                     </ul>
-                    <div class="card card-statistics">
-                        <div class="card-body statistics-body">
-                            @include('flash::message')
-                            {!! html()->form('POST', route('user.teams.store'))->attribute('enctype', 'multipart/form-data')->open() !!}
-                            @include('user.match_between_teams.fields')
-                            {{ html()->form()->close() }}
-                        </div>
-                    </div>
+                    {{-- <div class="card card-statistics">
+                        <div class="card-body statistics-body"> --}}
+                    @include('flash::message')
+                    {{-- {!! html()->form('POST', route('user.teams.store'))->attribute('enctype', 'multipart/form-data')->open() !!} --}}
+                    @include('user.match_between_teams.fields')
+                    {{-- {{ html()->form()->close() }} --}}
+                    {{-- </div>
+                    </div> --}}
                 </div>
             </div>
         </section>
