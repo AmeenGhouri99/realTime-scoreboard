@@ -148,6 +148,15 @@ class BallController extends Controller
                     $is_wide = true;
                     // $runs_conceded = ; // One run for wide
                 }
+                if ($extra_runs == 1 || $extra_runs == 3) {
+                    PlayerStats::where('scoreboard_id', $request->input('innings_id'))
+                        ->where('player_id', $request->striker_batsman_id)
+                        ->update(['is_on_strike' => 0]);
+
+                    PlayerStats::where('scoreboard_id', $request->input('innings_id'))
+                        ->where('player_id', $request->non_striker_batsman_id)
+                        ->update(['is_on_strike' => 1]);
+                }
                 $wide_and_no_ball_runs = $extra_runs + 1;
                 $bowlerStats = BowlerStats::where('scoreboard_id', $request->input('innings_id'))
                     ->where('bowler_id', $request->bowler_id)
@@ -224,7 +233,6 @@ class BallController extends Controller
                             ->where('player_id', $request->non_striker_batsman_id)
                             ->update(['is_on_strike' => 1]);
                     }
-
                     // Update batsman runs
                     $batsmanStats = PlayerStats::where('scoreboard_id', $request->input('innings_id'))
                         ->where('player_id', $request->striker_batsman_id)
@@ -265,6 +273,23 @@ class BallController extends Controller
                 $update_bowler_id->update(['bowler_id' => null]);
                 $currentOverNumber++;
                 $currentBallCount = 0;
+                if ($ballResult == 1 || $ballResult == 3) {
+                    PlayerStats::where('scoreboard_id', $request->input('innings_id'))
+                        ->where('player_id', $request->striker_batsman_id)
+                        ->update(['is_on_strike' => 1]);
+
+                    PlayerStats::where('scoreboard_id', $request->input('innings_id'))
+                        ->where('player_id', $request->non_striker_batsman_id)
+                        ->update(['is_on_strike' => 0]);
+                } else {
+                    PlayerStats::where('scoreboard_id', $request->input('innings_id'))
+                        ->where('player_id', $request->non_striker_batsman_id)
+                        ->update(['is_on_strike' => 1]);
+
+                    PlayerStats::where('scoreboard_id', $request->input('innings_id'))
+                        ->where('player_id', $request->striker_batsman_id)
+                        ->update(['is_on_strike' => 0]);
+                }
             }
             // dd($runs_conceded);
             // Save the ball data in the database
@@ -278,6 +303,9 @@ class BallController extends Controller
                 'extra_runs' => $no_ball_runs_from_bat === false || $runs_from_bye  || $runs_from_leg_bye || $is_wide  ? $extra_runs : 0,
                 'runs_conceded' => $from_bat || $no_ball_runs_from_bat || $runs_from_bye === false  || $runs_from_leg_bye === false || $is_wide === false ? $runs_conceded : 0,
                 'is_wicket' => $wicket,
+                'runs_conceded' => ($from_bat || $no_ball_runs_from_bat || $runs_from_bye === false || $runs_from_leg_bye === false || $is_wide === false) ? $runs_conceded : 0,
+                'is_wicket' => $wicket,
+                'no_ball_type' => $no_ball_runs_from_bat ? 'from_bat' : ($runs_from_bye || $runs_from_leg_bye ? 'bye/leg-bye' : null),
             ]);
 
             // Update match and scoreboard

@@ -22,5 +22,6 @@ class Ball extends Model
         "fielder_1_id",
         "fielder_2_id",
         'out_type',
+        'no_ball_type'
     ];
 }

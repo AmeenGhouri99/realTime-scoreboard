@@ -273,8 +273,8 @@ class ScoreBoardController extends Controller
             $total_wickets = $ball_result->where('is_wicket', 1)->count(); // Assuming 'is_wicket' is boolean
             $player1_runs = $ball_result->where('batsman_id', $scoreboard->player1_id)->sum('runs_conceded');
             $player2_runs = $ball_result->where('batsman_id', $scoreboard->player2_id)->sum('runs_conceded');
-            $player1_ball_faced = $ball_result->where('batsman_id', $scoreboard->player1_id)->where('ball_type', '!=', 'wide')->where('ball_type', '!=', 'no-ball')->count();
-            $player2_ball_faced = $ball_result->where('batsman_id', $scoreboard->player2_id)->where('ball_type', '!=', 'wide')->where('ball_type', '!=', 'no-ball')->count();
+            $player1_ball_faced = $ball_result->where('batsman_id', $scoreboard->player1_id)->where('ball_type', '!=', 'wide')->where('no_ball_type', '!=', 'bye/leg-bye')->count();
+            $player2_ball_faced = $ball_result->where('batsman_id', $scoreboard->player2_id)->where('ball_type', '!=', 'wide')->where('no_ball_type', '!=', 'bye/leg-bye')->count();
             $striker_player_id = '';
             $non_striker_player_id = '';
             if ($scoreboard->player1->playerStats->where('scoreboard_id', $scoreboard->id)->first()->is_on_strike) {
