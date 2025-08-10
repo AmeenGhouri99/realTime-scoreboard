@@ -243,35 +243,47 @@
 <script>
     var sseSource = new EventSource("/scoreBoard/" +
         {{ request()->id }});
-
     sseSource.onmessage = function(event) {
-        let eventData = JSON.parse(event.data)
+        let eventData = JSON.parse(event.data);
+
         console.log('this is the event data = ' + eventData)
         $('#first_player_name').text(eventData.player1 ?? "Unknown Player");
         $('#second_player_name').text(eventData.player2 ?? "Unknown Player");
 
 
         // $('#batting_team_name').text(eventData.batting_team_name)
-        $('#player1_stats').text(eventData.player1_stats ?? 0)
-        $('#first_player_ball_faced').text(eventData.player1_ball_faced ?? 0)
-        $('#player2_stats').text(eventData.player2_stats ?? 0)
-        $('#second_player_ball_faced').text(eventData.player2_ball_faced ?? 0)
-        $('#batting_team_score').text(eventData.total_runs ?? 0)
-        $('#batting_team_out').text(eventData.total_wickets ?? 0)
-        $('#running_over').text(eventData.total_overs_done ?? 0)
-        $('#total_overs').text(eventData.data.total_overs ?? 0)
-        $('#extras').text(eventData.scoreboard.extra ?? 0)
-        $('#bowler_name').text(eventData.bowler_name ?? "Unknown Bowler")
-        $('#bowler_runs').text(eventData.scoreboard.bowler_runs ?? 0)
-        $('#bowler_overs').text(eventData.scoreboard.bowler_overs ?? 0)
-        $('#bowler_ball_faced, #current_over_balls').text(eventData.scoreboard.bowler_ball_faced ?? 0)
-        $('#target').text(eventData.target)
-        $('#bowling_team_name').text(eventData.bowling_team_name)
-        $('#target_message').text(eventData.target_message)
-        $('#bowler_wickets').text(eventData.scoreboard.bowler_wickets ?? 0)
-        $('#batting_team_name,#batting_team').text(eventData.batting_team_name)
-        $('#striker_batsman_id').val(eventData.striker_player_id)
-        $('#non_striker_batsman_id').val(eventData.non_striker_player_id)
+        $('#player1_stats').text(eventData.player1_stats ?? 0);
+        $('#first_player_ball_faced').text(eventData
+            .player1_ball_faced ?? 0);
+        $('#player2_stats').text(eventData.player2_stats ?? 0);
+        $('#second_player_ball_faced').text(eventData.player2_ball_faced ?? 0);
+        $('#batting_team_score')
+            .text(eventData.total_runs ?? 0);
+        $('#batting_team_out').text(eventData.total_wickets ?? 0);
+        $(
+            '#running_over').text(eventData.total_overs_done ?? 0);
+        $('#total_overs').text(eventData.data
+            .total_overs ?? 0);
+        $('#extras').text(eventData.scoreboard.extra ?? 0);
+        $('#bowler_name').text(
+            eventData.bowler_name ?? "Unknown Bowler");
+        $('#bowler_runs').text(eventData.scoreboard
+            .bowler_runs ?? 0);
+        $('#bowler_overs').text(eventData.scoreboard.bowler_overs ?? 0);
+        $(
+            '#bowler_ball_faced, #current_over_balls').text(eventData.scoreboard.bowler_ball_faced ?? 0);
+        $(
+            '#target').text(eventData.target);
+        $('#bowling_team_name').text(eventData.bowling_team_name);
+        $(
+            '#target_message').text(eventData.target_message);
+        $('#bowler_wickets').text(eventData.scoreboard
+            .bowler_wickets ?? 0);
+        $('#batting_team_name,#batting_team').text(eventData.batting_team_name);
+        $(
+            '#striker_batsman_id').val(eventData.striker_player_id);
+        $('#non_striker_batsman_id').val(
+            eventData.non_striker_player_id)
 
         console.log('Player 1 Stats:', eventData.player1_stats); // Highlight the striker
         const strikerId = eventData.striker_player_id; // Ensure this ID is provided by the backend

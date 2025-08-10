@@ -102,3 +102,11 @@ body {
      /* Outline color and thickness */
  }
                          /* Outline size and color */
+ .iti--allow-dropdown input,
+ .iti--allow-dropdown input[type=text],
+ .iti--allow-dropdown input[type=tel],
+ .iti--separate-dial-code input,
+ .iti--separate-dial-code input[type=text],
+ .iti--separate-dial-code input[type=tel] {
+     padding-left: 90px !important;
+     padding-right: 110px !important;}

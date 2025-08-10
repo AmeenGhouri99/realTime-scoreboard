@@ -52,8 +52,8 @@ class MatchController extends Controller
     {
         // dd($request);
         try {
-            $model = CricketMatch::find($id);
-            $match = $model->update([
+            $match_information = CricketMatch::find($id);
+            $match = $match_information->update([
 
                 'total_overs' => $request->input('total_overs'),
                 'which_team_won_the_toss' => $request->input('which_team_won_the_toss'),
@@ -63,15 +63,15 @@ class MatchController extends Controller
             ]);
 
             DB::commit();
-            flash('Match updated successfully.')->success();
-            return redirect()->route('user.teams.teamsOfTournament', $request->input('tournament_id'));
+            flash('Match Management updated successfully.')->success();
+            return redirect()->route('user.teams.matchesBetweenTeams', $match_information->tournament_id);
         } catch (CustomException $e) {
             DB::rollback();
             flash($e->getMessage())->error();
             return back();
         } catch (\Exception $e) {
             DB::rollback();
-            Helper::logMessage('Team store', $request->input(), $e->getMessage());
+            Helper::logMessage('Match Manage Update', $request->input(), $e->getMessage());
             flash("Something Went Wrong!")->error();
             return back();
         }
@@ -83,6 +83,12 @@ class MatchController extends Controller
         $bowlers = $players;  // Assuming bowlers can be anyone from the teams
 
         return view('matches.show', compact('match', 'players', 'bowlers'));
+    }
+    public function destroy($id)
+    {
+        CricketMatch::findOrFail($id)->delete();
+        flash('Match Deleted successfully.')->success();
+        return back();
     }
 
     // public function update(Request $request, CricketMatch $match)

@@ -56,6 +56,18 @@
                                                 <a href="{{ route('user.scoreboard.create', $match->id) }}"
                                                     class="btn btn-primary btn-sm">
                                                     ScoreBoard</a>
+                                                <form action="{{ route('user.matches.destroy') }}" method="POST"
+                                                    style="display: inline;"
+                                                    onsubmit="return confirm('Are you sure you want to delete this match?');">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <button type="submit"
+                                                        class="btn btn-link text-danger p-0 m-0 align-baseline"
+                                                        style="text-decoration: none;">
+                                                        <i class="trash"></i> Del
+                                                    </button>
+                                                </form>
+
                                             </td>
                                         </tr>
                                     @endforeach
