@@ -14,9 +14,9 @@
         content="admin template, Vuexy admin template, dashboard template, flat admin template, responsive admin template, web app">
     <meta name="author" content="PIXINVENT">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>Med. Legal Safe Keep</title>
+    <title>Local Cricket Live</title>
     <link rel="apple-touch-icon" href="{{ asset('app-assets/images/ico/apple-icon-120.png') }}">
-    <link rel="shortcut icon" type="image/x-icon" href="{{ asset('app-assets/med.jpeg') }}">
+    <link rel="shortcut icon" type="image/x-icon" href="{{ asset('app-assets/localcricketLivelogo.png') }}">
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,300;0,400;0,500;0,600;1,400;1,500;1,600"
         rel="stylesheet">
 

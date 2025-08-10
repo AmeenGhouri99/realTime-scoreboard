@@ -41,7 +41,8 @@
              </div>
          </div> --}}
          <div class="text-center">
-             <img src="{{ asset('app-assets/images/uni.png') }}" alt="logo" style="width: 120px; height:120px">
+             <img src="{{ asset('app-assets/localcricketlivelogo.png') }}" alt="logo"
+                 style="width: 120px; height:120px">
              <h2 class="brand-text text-primary ms-1">ScoreBoard For LiveVideos</h2>
          </div>
          <ul class="nav justify-content-center mb-2">

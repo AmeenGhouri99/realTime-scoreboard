@@ -271,19 +271,13 @@ class ScoreBoardController extends Controller
             $total_runs_conceded = $ball_result->sum('runs_conceded');
             $total_extra_runs = $ball_result->sum('extra_runs'); // Make sure this field exists
             $total_wickets = $ball_result->where('is_wicket', 1)->count(); // Assuming 'is_wicket' is boolean
-            $player1_runs = $ball_result->where('batsman_id', $scoreboard->player1_id)->sum('runs_conceded');
-            $player2_runs = $ball_result->where('batsman_id', $scoreboard->player2_id)->sum('runs_conceded');
+            $player1_runs = $ball_result->where('batsman_id', $scoreboard->player1_id)->sum('runs_conceded') ?? 0;
+            $player2_runs = $ball_result->where('batsman_id', $scoreboard->player2_id)->sum('runs_conceded') ?? 0;
             $player1_ball_faced = $ball_result->where('batsman_id', $scoreboard->player1_id)->where('ball_type', '!=', 'wide')->where('no_ball_type', '!=', 'bye/leg-bye')->count();
             $player2_ball_faced = $ball_result->where('batsman_id', $scoreboard->player2_id)->where('ball_type', '!=', 'wide')->where('no_ball_type', '!=', 'bye/leg-bye')->count();
             $striker_player_id = '';
             $non_striker_player_id = '';
-            if ($scoreboard->player1->playerStats->where('scoreboard_id', $scoreboard->id)->first()->is_on_strike) {
-                $striker_player_id = $scoreboard->player1->id;
-                $non_striker_player_id = $scoreboard->player2->id;
-            } else {
-                $striker_player_id = $scoreboard->player2->id;
-                $non_striker_player_id = $scoreboard->player1->id;
-            }
+
             // Calculate the total overs done by counting balls (assuming 6 balls per over)
             foreach ($ball_result as $ball) {
                 $ball_number = $ball->latest()->first()->ball_number;
@@ -292,10 +286,25 @@ class ScoreBoardController extends Controller
             }
             // $balls_done = $ball_result->latest()->first()->ball_number;
             //  dd($balls_done);
-            $total_overs_done = "{$overs_done}.{$ball_number}";
+
+            $displayed_ball_no = "";
+
+            if ($ball_number === 0) {
+                $displayed_ball_no = 1;
+            } else {
+                $displayed_ball_no = $ball_number;
+            }
+            $total_overs_done = "{$overs_done}.{$displayed_ball_no}";
 
             // Calculate the total scores
             $total_scores = $total_runs_conceded + $total_extra_runs + $total_wide_balls + $total_no_balls;
+        }
+        if ($scoreboard->player1->playerStats->where('scoreboard_id', $scoreboard->id)->first()->is_on_strike) {
+            $striker_player_id = $scoreboard->player1->id;
+            $non_striker_player_id = $scoreboard->player2->id;
+        } else {
+            $striker_player_id = $scoreboard->player2->id;
+            $non_striker_player_id = $scoreboard->player1->id;
         }
         // Commit the transaction and return the response
         // DB::commit();
@@ -351,18 +360,19 @@ class ScoreBoardController extends Controller
             'player1' => $scoreboard->player1->name,
             'player2' => $scoreboard->player2->name,
             'bowler_name' => $scoreboard->bowler->name,
-            'player1_stats' => $player1_runs . "(" . $player1_ball_faced . ")",
-            'player2_stats' => $player2_runs . "(" . $player2_ball_faced . ")",
+            'player1_stats' => ($player1_runs ?? 0) . "(" . ($player1_ball_faced ?? 0) . ")",
+            'player2_stats' => ($player2_runs ?? 0) . "(" . ($player2_ball_faced ?? 0) . ")",
+
             'striker_player_id' => $striker_player_id,
             'non_striker_player_id' => $non_striker_player_id,
             // 'player1_ball_faced' => $player1_ball_faced,
             // 'player2_ball_faced' => $player2_ball_faced,
-            'total_runs' => $total_scores,
-            'total_wickets' => $total_wickets,
+            'total_runs' => $total_scores ?? 0,
+            'total_wickets' => $total_wickets ?? 0,
             'total_overs' => $data->total_overs,
-            'total_overs_done' => $total_overs_done,
-            'current_over_stats' => $current_over_stats,
-            'extra_runs' => $total_extra_runs + $total_no_balls + $total_wide_balls,
+            'total_overs_done' => $total_overs_done ?? 0,
+            'current_over_stats' => $current_over_stats ?? 0,
+            'extra_runs' => ($total_extra_runs ?? 0) + ($total_no_balls ?? 0) + ($total_wide_balls ?? 0),
         ];
 
         // error_log(print_r(headers_list(), true)); // Log the headers to the PHP error log

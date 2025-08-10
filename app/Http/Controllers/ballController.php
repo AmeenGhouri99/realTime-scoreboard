@@ -28,8 +28,10 @@ class BallController extends Controller
         $team_id = $id;
         return view('user.score.index', compact('players', 'team_id'));
     }
+
     public function updateBallCount(Request $request)
     {
+
         DB::beginTransaction(); // Start a transaction
 
         try {
@@ -433,6 +435,9 @@ class BallController extends Controller
             ], 500);
         }
     }
+
+
+
 
 
 

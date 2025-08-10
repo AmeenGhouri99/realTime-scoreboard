@@ -12,8 +12,7 @@
                         </div>
                         <div class="col-sm-6 text-end">
                             <a class="dt-button create-new btn btn-primary content-end"
-                                href="{{ route('user.teams.addTeamsForMatch', request()->id) }}"><i
-                                    data-feather='plus'></i></a>
+                                href="{{ route('user.teams.addTeamsForMatch', request()->id) }}">Create A Match</a>
                         </div>
                     </div>
 
@@ -72,6 +71,17 @@
                                                 <a href="{{ route('user.scoreboard.create', $match->id) }}"
                                                     class="btn btn-primary btn-sm">
                                                     ScoreBoard</a>
+                                                <form action="{{ route('user.matches.destroy', $match->id) }}"
+                                                    method="POST" style="display: inline;"
+                                                    onsubmit="return confirm('Are you sure you want to delete this match?');">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <button type="submit"
+                                                        class="btn btn-link text-danger p-0 m-0 align-baseline"
+                                                        style="text-decoration: none;">
+                                                        <i data-feather='delete'></i>
+                                                    </button>
+                                                </form>
                                             </td>
                                         </tr>
                                     @endforeach

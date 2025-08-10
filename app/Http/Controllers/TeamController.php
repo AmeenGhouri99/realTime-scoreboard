@@ -25,6 +25,7 @@ class TeamController extends Controller
         try {
             $teams = Team::where('tournament_id', $id)->with('tournament', 'Team1Match', 'Team2Match')->orderBy('id', 'desc')
                 ->get();
+
             return view('user.teams.index', compact('teams'));
         } catch (CustomException $e) {
             flash($e->getMessage())->error();
