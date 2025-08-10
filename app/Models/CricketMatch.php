@@ -31,6 +31,7 @@ class CricketMatch extends Model
         'total_wickets_of_team1',
         'total_wickets_of_team2',
         'batting_team_id',
+        'winner_team_id',
     ];
 
     public function tournament()
@@ -81,6 +82,11 @@ class CricketMatch extends Model
     {
         return $this->belongsTo(Team::class, 'batting_team_id');
     }
+    public function winnerTeam(): BelongsTo
+    {
+        return $this->belongsTo(Team::class, 'winner_team_id');
+    }
+
     // public function scoreboard()
     // {
     //     return $this->belongsTo(Score::class, 'match_id');

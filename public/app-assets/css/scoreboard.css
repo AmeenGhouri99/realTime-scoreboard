@@ -1,0 +1,286 @@
+
+        body {
+            background-color: #1c1c1c;
+            color: #fff;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        /* Header */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;
+            background-color: #333;
+            border-bottom: 2px solid #444;
+        }
+
+        .header span {
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+
+        .header .btn-light {
+            background-color: transparent;
+            border: none;
+            color: #fff;
+        }
+
+        /* Score Section */
+        .score-section {
+            text-align: center;
+            padding: 20px 0;
+            background-color: #222;
+            border-bottom: 2px solid #444;
+        }
+
+        .score-section h1 {
+            font-size: 3rem;
+            margin-bottom: 0;
+        }
+
+        .score-section small {
+            font-size: 1.2rem;
+            color: #bbb;
+        }
+
+        .score-section p {
+            font-size: 1rem;
+            color: #bbb;
+            margin-top: 5px;
+        }
+
+        /* Player Info Section */
+        .players-info {
+            display: flex;
+            justify-content: space-between;
+            padding: 15px;
+            background-color: #2a2a2a;
+            border-radius: 8px;
+            margin: 10px 0;
+        }
+
+        .player {
+            text-align: center;
+            flex: 1;
+        }
+
+        .player span {
+            display: block;
+            font-size: 1rem;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .player p {
+            margin: 0;
+            font-size: 1rem;
+        }
+
+        /* CAO Button */
+        .cao-btn {
+            text-align: center;
+            background-color: #d9534f;
+            padding: 15px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            border-radius: 50%;
+            color: white;
+            display: inline-block;
+        }
+
+        /* Bowler Info Section */
+        .bowler-info {
+            text-align: center;
+        }
+
+        .bowler-result {
+            font-size: 1.2rem;
+            color: #ffbf00;
+            font-weight: bold;
+        }
+
+        /* Action Buttons */
+        .action-buttons {
+            margin-top: 20px;
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+        }
+
+
+        .action-buttons button {
+            padding: 10px;
+            font-size: 18px;
+            background-color: #333;
+            border: none;
+            color: #fff;
+            border-radius: 8px;
+            transition: all 0.3s ease-in-out;
+        }
+
+        .action-buttons button:hover {
+            background-color: #555;
+        }
+
+        .action-buttons .btn-warning {
+            background-color: #f0ad4e;
+        }
+
+        .action-buttons .btn-danger {
+            background-color: #d9534f;
+        }
+
+        .action-buttons .btn-dark {
+            background-color: #444;
+        }
+
+        .undo-btn {
+            grid-column: span 4;
+            background-color: #5bc0de;
+            color: white;
+        }
+
+        .undo-btn:hover {
+            background-color: #31b0d5;
+        }
+/* Text color for the player on strike */
+.text-warning {
+    color: #ffc107;
+    /* Bootstrap's warning color (bright yellow) */
+    font-weight: bold;
+    /* Make it bold to emphasize */
+}
+
+/* Text color for the player not on strike */
+.text-secondary {
+    color: #6c757d;
+    /* Bootstrap's secondary color (grayish) */
+    font-weight: normal;
+    /* Normal weight for non-striker */
+}
+ /* Modal styles */
+ .modal {
+     display: none;
+     /* Hidden by default */
+     position: fixed;
+     /* Stay in place */
+     z-index: 1000;
+     /* Sit on top */
+     left: 0;
+     top: 0;
+     width: 100%;
+     /* Full width */
+     height: 100%;
+     /* Full height */
+     overflow: auto;
+     /* Enable scroll if needed */
+     background-color: rgba(0, 0, 0, 0.5);
+     /* Black w/ opacity */
+ }
+
+ /* Modal Content */
+ .modal-content {
+    color:black;
+     background-color: #fefefe;
+     margin: 15% auto;
+     /* 15% from the top and centered */
+     padding: 20px;
+     border: 1px solid #888;
+     width: 300px;
+     /* Could be more or less, depending on screen size */
+     border-radius: 10px;
+     /* Rounded corners */
+ }
+
+ /* Close button */
+ .close {
+     color: #aaa;
+     float: right;
+     font-size: 28px;
+     font-weight: bold;
+ }
+
+ .close:hover,
+ .close:focus {
+     color: black;
+     text-decoration: none;
+     cursor: pointer;
+ }
+
+ .wide-runs {
+     background-color: #d1ecf1;
+     /* Light blue background */
+     color: #0c5460;
+     /* Text color */
+     border: 1px solid #bee5eb;
+     /* Border style */
+     padding: 10px;
+     /* Padding */
+     border-radius: 5px;
+     /* Rounded corners */
+     margin-bottom: 15px;
+     /* Spacing below */
+ }
+
+ .button-details {
+     font-weight: bold;
+     /* Bold text */
+     margin-bottom: 10px;
+     /* Spacing below */
+ }
+
+ .close-btn {
+     cursor: pointer;
+     /* Pointer cursor */
+     float: right;
+     /* Align to the right */
+     font-size: 20px;
+     /* Larger font size */
+     color: #aaa;
+     /* Close button color */
+ }
+
+ .close-btn:hover,
+ .close-btn:focus {
+     color: black;
+     /* Change color on hover */
+     text-decoration: none;
+     /* No underline */
+     cursor: pointer;
+     /* Pointer cursor */
+ }
+
+ .submit-btn {
+     background-color: #007bff;
+     /* Bootstrap primary color */
+     color: white;
+     /* White text */
+     border: none;
+     /* No border */
+     padding: 10px 20px;
+     /* Padding */
+     border-radius: 5px;
+     /* Rounded corners */
+     cursor: pointer;
+     /* Pointer cursor */
+ }
+
+ .submit-btn:hover {
+     background-color: #0056b3;
+     /* Darker shade on hover */
+ }
+ .wide-runs {
+     background-color: #d1ecf1;
+     color: #0c5460;
+     border: 1px solid #bee5eb;
+     padding: 10px;
+     border-radius: 5px;
+     margin-bottom: 15px;
+ }
+
+ .button-details {
+     font-weight: bold;
+     margin-bottom: 10px;
+ }
+

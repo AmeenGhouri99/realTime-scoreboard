@@ -90,23 +90,26 @@
     {{-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script> --}}
     {{-- <script src="https://cdnjs.cloudflare.com/ajax/libs/intro.js/7.2.0/intro.js" referrerpolicy="no-referrer"></script> --}}
     <script>
-        var sseSource = new EventSource("/scoreBoard/12");
+        var sseSource = new EventSource("/scoreBoard/" +
+            {{ request()->id }});
 
         sseSource.onmessage = function(event) {
             let eventData = JSON.parse(event.data)
-            $('#first_player_name').text(eventData.scoreboard.first_player_name ?? "Unknown Player");
-            $('#second_player_name').text(eventData.scoreboard.second_player_name ?? "Unknown Player");
+            $('#first_player_name').text(eventData.player1 ?? "Unknown Player");
+            $('#second_player_name').text(eventData.player2 ?? "Unknown Player");
+
+
             // $('#batting_team_name').text(eventData.batting_team_name)
-            $('#first_player_runs').text(eventData.scoreboard.first_player_runs ?? 0)
-            $('#first_player_ball_faced').text(eventData.scoreboard.first_player_ball_faced ?? 0)
-            $('#second_player_runs').text(eventData.scoreboard.second_player_runs ?? 0)
-            $('#second_player_ball_faced').text(eventData.scoreboard.second_player_ball_faced ?? 0)
-            $('#batting_team_score').text(eventData.scoreboard.total_scores ?? 0)
-            $('#batting_team_out').text(eventData.scoreboard.total_wickets ?? 0)
-            $('#running_over').text(eventData.scoreboard.overs_done ?? 0)
+            $('#player1_stats').text(eventData.player1_stats ?? 0)
+            $('#first_player_ball_faced').text(eventData.player1_ball_faced ?? 0)
+            $('#player2_stats').text(eventData.player2_stats ?? 0)
+            $('#second_player_ball_faced').text(eventData.player2_ball_faced ?? 0)
+            $('#batting_team_score').text(eventData.total_runs ?? 0)
+            $('#batting_team_out').text(eventData.total_wickets ?? 0)
+            $('#running_over').text(eventData.total_overs_done ?? 0)
             $('#total_overs').text(eventData.data.total_overs ?? 0)
             $('#extras').text(eventData.scoreboard.extra ?? 0)
-            $('#bowler_name').text(eventData.scoreboard.bowler_name ?? "Unknown Bowler")
+            $('#bowler_name').text(eventData.bowler_name ?? "Unknown Bowler")
             $('#bowler_runs').text(eventData.scoreboard.bowler_runs ?? 0)
             $('#bowler_overs').text(eventData.scoreboard.bowler_overs ?? 0)
             $('#bowler_ball_faced, #current_over_balls').text(eventData.scoreboard.bowler_ball_faced ?? 0)
@@ -115,9 +118,9 @@
             $('#target_message').text(eventData.target_message)
             $('#bowler_wickets').text(eventData.scoreboard.bowler_wickets ?? 0)
             $('#batting_team_name,#batting_team').text(eventData.batting_team_name)
-
-
-            console.log(eventData.scoreboard.bowler_ball_faced);
+            $('#striker_batsman_id').val(eventData.striker_player_id)
+            $('#non_striker_batsman_id').val(eventData.non_striker_player_id)
+            console.log(eventData);
 
         };
 
@@ -129,7 +132,8 @@
         };
 
         function establishSSEConnection() {
-            var sseSource = new EventSource("/scoreBoard/12");
+            var sseSource = new EventSource("/scoreBoard/" +
+                {{ request()->id }});
         }
     </script>
 </body>

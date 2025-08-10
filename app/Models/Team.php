@@ -37,6 +37,10 @@ class Team extends Model
     {
         return $this->hasMany(CricketMatch::class, 'team2_id');
     }
+    public function teamPlayers(): HasMany
+    {
+        return $this->hasMany(Player::class, 'team_id');
+    }
     /**
      * Get the tournament that owns the Team
      *

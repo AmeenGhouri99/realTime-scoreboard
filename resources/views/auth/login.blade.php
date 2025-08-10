@@ -64,7 +64,7 @@
                         <div class="card mb-0">
                             <div class="card-body">
                                 <a href="{{ url('/') }}" class="brand-logo">
-                                    <img src="{{ asset('app-assets/medlegalsafekeeplogo.png') }}" height="180px"
+                                    <img src="{{ asset('app-assets/localcricketlivelogo.png') }}" height="180px"
                                         width="250px">
                                     {{-- <h2 class="brand-text text-primary ms-1">Auction 11</h2> --}}
                                 </a>
@@ -73,7 +73,7 @@
                                     @csrf
                                     @include('flash::message')
                                     <div class="mb-1">
-                                        <div class="d-flex justify-content-between">
+                                        <div class="d-flex">
                                             <label for="login-email" class="form-label">Phone</label>
                                         </div>
                                         <input type="hidden" value="+" id="phone_country_code"

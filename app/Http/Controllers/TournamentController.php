@@ -32,8 +32,9 @@ class TournamentController extends Controller
                 'user_id' => FacadesAuth::id(),
             ]);
             FacadesDB::commit();
+            $tournament_id = $tournament->id;
             flash('Tournament created successfully.')->success();
-            return view('user.teams.create', compact('tournament'));
+            return view('user.teams.create', compact('tournament_id'));
         } catch (CustomException $e) {
             FacadesDB::rollback();
             flash($e->getMessage())->error();

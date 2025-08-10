@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Score extends Model
 {
@@ -13,24 +14,16 @@ class Score extends Model
     protected $fillable = [
         'team_id',
         'match_id',
-        'first_player_name',
-        'second_player_name',
         'total_scores',
-        'first_player_runs',
-        'second_player_runs',
-        'first_player_ball_faced',
-        'second_player_ball_faced',
+        'player1_id',
+        'player2_id',
+        'bowler_id',
         'extra',
-        'bowler_name',
-        'bowler_ball_faced',
-        'bowler_overs',
-        'bowler_runs',
         'target',
         'innings',
         'overs_done',
         'innings',
         'total_wickets',
-        'bowler_wickets'
     ];
     /**
      * Get the user that owns the Score
@@ -44,5 +37,29 @@ class Score extends Model
     public function team(): BelongsTo
     {
         return $this->belongsTo(Team::class, 'team_id');
+    }
+    public function player1(): BelongsTo
+    {
+        return $this->belongsTo(Player::class, 'player1_id');
+    }
+    public function player2(): BelongsTo
+    {
+        return $this->belongsTo(Player::class, 'player2_id');
+    }
+    public function bowler(): BelongsTo
+    {
+        return $this->belongsTo(Player::class, 'bowler_id');
+    }
+    public function playerStats(): HasMany
+    {
+        return $this->hasMany(PlayerStats::class, 'innings_id');
+    }
+    public function bowlersStats(): HasMany
+    {
+        return $this->hasMany(BowlerStats::class, 'innings_id');
+    }
+    public function ball(): HasMany
+    {
+        return $this->hasMany(Ball::class, 'innings_id');
     }
 }

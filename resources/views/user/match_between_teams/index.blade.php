@@ -8,11 +8,11 @@
                 <div class="col-xl-12 col-md-6 col-12">
                     <div class="row mb-1">
                         <div class="col-sm-6">
-                            <h5>Matches Of the Tournaments</h5>
+                            <h5>Teams of the Tournaments</h5>
                         </div>
                         <div class="col-sm-6 text-end">
                             <a class="dt-button create-new btn btn-primary content-end"
-                                href="{{ route('user.teams.addTeams', request()->id) }}"><i data-feather='plus'></i></a>
+                                href="{{ route('user.teams.addTeamsForMatch', request()->id) }}">Create A Match</a>
                         </div>
                     </div>
 
@@ -41,9 +41,24 @@
                                             </td>
                                             <td>
                                                 {{ $match->team1->name }}
+                                                <br>
+
+                                                Players: {{ $match->team1->teamPlayers->count() }}
+                                                <br>
+
+                                                Add More
+                                                <a href="{{ route('user.players.index', $match->team1->id) }}"><i
+                                                        data-feather='plus-circle'></i></a>
                                             </td>
                                             <td>
                                                 {{ $match->team2->name }}
+
+                                                <br>
+                                                Players: {{ $match->team2->teamPlayers->count() }}
+                                                <br>
+                                                Add More
+                                                <a href="{{ route('user.players.index', $match->team2->id) }}"><i
+                                                        data-feather='plus-circle'></i></a>
                                             </td>
                                             <td>
                                                 {{-- <a href="{{ route('user.players.create', $match->id) }}"
@@ -56,18 +71,17 @@
                                                 <a href="{{ route('user.scoreboard.create', $match->id) }}"
                                                     class="btn btn-primary btn-sm">
                                                     ScoreBoard</a>
-                                                <form action="{{ route('user.matches.destroy') }}" method="POST"
-                                                    style="display: inline;"
+                                                <form action="{{ route('user.matches.destroy', $match->id) }}"
+                                                    method="POST" style="display: inline;"
                                                     onsubmit="return confirm('Are you sure you want to delete this match?');">
                                                     @csrf
                                                     @method('DELETE')
                                                     <button type="submit"
                                                         class="btn btn-link text-danger p-0 m-0 align-baseline"
                                                         style="text-decoration: none;">
-                                                        <i class="trash"></i> Del
+                                                        <i data-feather='delete'></i>
                                                     </button>
                                                 </form>
-
                                             </td>
                                         </tr>
                                     @endforeach
