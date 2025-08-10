@@ -20,15 +20,15 @@ class PlayerController extends Controller
         if (empty($players)) {
             throw new CustomException('Record Not Found!');
         }
-        $team_id = $id;
-        return view('user.players.index', compact('players', 'team_id'));
+        $team = Team::find($id);
+        return view('user.players.index', compact('players', 'team'));
     }
     public function create($id)
     {
 
         $team = Team::find($id);
         if (empty($team)) {
-            throw new CustomException('Record Not Found!');
+            throw new CustomException('Team record not found!');
         }
         return view('user.players.create', compact('team'));
     }

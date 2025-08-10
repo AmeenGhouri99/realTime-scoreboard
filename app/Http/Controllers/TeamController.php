@@ -17,8 +17,8 @@ class TeamController extends Controller
     public function addTeam($id)
     {
         // $teams = Team::where('tournament_id', $id)->with('tournament', 'Team1Match', 'Team2Match')->get();
-        $tournament_id = $id;
-        return view('user.teams.create', compact('tournament_id'));
+        $tournament = Tournament::find($id);
+        return view('user.teams.create', compact('tournament'));
     }
     public function teams($id)
     {
@@ -40,10 +40,11 @@ class TeamController extends Controller
         // dd($id);
         try {
             $teams = Team::where('tournament_id', $id)->with('tournament', 'Team1Match', 'Team2Match', 'teamPlayers')->orderBy('id', 'desc')->get();
+            $tournament= Tournament::find($id);
             $matches = CricketMatch::with(['team1', 'team2', 'tournament' => function ($query) {
                 $query->where('user_id', Auth::id());
             }])->where('tournament_id', $id)->orderBy('created_at', 'desc')->get();
-            return view('user.teams.index', compact('matches', 'teams'));
+            return view('user.teams.index', compact('matches', 'teams', 'tournament'));
         } catch (CustomException $e) {
             flash($e->getMessage())->error();
             return back();

@@ -8,7 +8,7 @@
                 <div class="col-xl-12 col-md-6 col-12">
                     <div class="row mb-1">
                         <div class="col-sm-6">
-                            <h5>Teams of the Tournaments</h5>
+                            <h5>Total Matches in <b>{{$tournament->name}}</b> Tournament</h5>
                         </div>
                         <div class="col-sm-6 text-end">
                             <a class="dt-button create-new btn btn-primary content-end"
@@ -21,12 +21,12 @@
                         <div class="card-body statistics-body">
                             @include('flash::message')
                             {{-- @include('user.home_page_modal') --}}
-                            <h4>Matches</h4>
+                            <h4>{{$tournament->name}} Matches</h4>
                             <table class="table" style="overflow:scroll">
                                 <thead>
                                     <tr>
                                         <th>Sr#</th>
-                                        <th>Tournament Name</th>
+                                        {{-- <th>Tournament Name</th> --}}
                                         <th>Team 1</th>
                                         <th>Team 2</th>
                                         <th>Action</th>
@@ -37,9 +37,9 @@
                                         <tr>
                                             <td>{{ $loop->iteration }}</td>
                                             {{-- <td>{{ $team->Team1Match }}</td> --}}
-                                            <td>
+                                            {{-- <td>
                                                 {{ $match->tournament->name }}
-                                            </td>
+                                            </td> --}}
                                             <td>
                                                 {{ $match->team1->name }}
                                                 <br>

@@ -23,10 +23,11 @@ class TeamsOfMatchController extends Controller
     {
         // dd($id);
         $teams = Team::where('tournament_id', $id)->with('tournament', 'Team1Match', 'Team2Match', 'teamPlayers')->get();
+        $tournament = Tournament::find($id);
         $matches = CricketMatch::with(['team1', 'team2', 'tournament' => function ($query) {
             $query->where('user_id', Auth::id());
         }])->where('tournament_id', $id)->orderBy('created_at', 'desc')->get();
-        return view('user.match_between_teams.index', compact('matches'));
+        return view('user.match_between_teams.index', compact('matches', 'tournament'));
     }
     public function store(Request $request)
     {

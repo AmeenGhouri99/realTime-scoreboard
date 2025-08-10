@@ -6,7 +6,7 @@
             <div class="row match-height">
                 <!-- Academic Card -->
                 <div class="col-xl-12 col-md-6 col-12">
-                    <h3>Add A Player</h3>
+                    <h3>Add A Player to {{ $team->name}}</h3>
                     <ul style="color: red">
                         <li>Add a Player Details here</li>
                         <li></li>

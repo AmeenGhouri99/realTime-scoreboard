@@ -6,7 +6,7 @@
             <div class="row match-height">
                 <!-- Academic Card -->
                 <div class="col-xl-12 col-md-6 col-12">
-                    <h3>Create Team</h3>
+                    <h3>Create Team in {{$tournament->name}}</h3>
                     <ul style="color: red">
                         <li>Below is the Creating Teams details</li>
                         <li></li>

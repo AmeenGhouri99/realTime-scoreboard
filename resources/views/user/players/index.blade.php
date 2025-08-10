@@ -8,9 +8,13 @@
                 <div class="col-xl-12 col-md-6 col-12">
                     <div class="row mb-1">
                         <div class="col-sm-6">
-                            <h5>Players of Team</h5>
+                            <h5>{{$team->name}} Team Dashboard</h5>
                         </div>
                         <div class="col-sm-6 text-end">
+                            <a class="dt-button create-new btn btn-primary content-end"
+                                href="{{ route('user.teams.matchesBetweenTeams', $team->tournament_id) }}">Matches</a>
+                                <a class="dt-button create-new btn btn-primary content-end"
+                                href="{{ route('user.teams.teamsOfTournament', $team->tournament_id) }}">Teams</a>
                             <a class="dt-button create-new btn btn-primary content-end"
                                 href="{{ route('user.players.create', request()->id) }}"><i data-feather='plus'></i></a>
                         </div>
@@ -21,26 +25,26 @@
                             @include('flash::message')
                             {!! html()->form('POST', route('user.players.store'))->attribute('enctype', 'multipart/form-data')->open() !!}
                             @include('user.players.fields', [
-                                'team_id' => $team_id,
+                                'team' => $team,
                             ])
                             {{ html()->form()->close() }}
 
                             {{-- @include('user.home_page_modal') --}}
-                            <h4 class="mt-1">Teams Player</h4>
+                            <h4 class="mt-1"> {{$team->name}} Total Players</h4>
                             <table class="table" style="overflow:scroll">
                                 <thead>
                                     <tr>
                                         {{-- <th>Select</th> --}}
                                         <th>Sr#</th>
                                         <th>Player Name</th>
-                                        <th>Team Name</th>
+                                        {{-- <th>Team Name</th> --}}
                                         <th>Action</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     @if ($players->isEmpty())
                                         <tr class="text-center">
-                                            <td colspan="8">You have Not add any of Player</td>
+                                            <td colspan="8">You have Not add any of Player in {{$team->name}} Team</td>
                                         </tr>
                                     @else
                                         @foreach ($players as $player)
@@ -49,7 +53,7 @@
                                                 </td> --}}
                                                 <td>{{ $loop->iteration }}</td>
                                                 <td>{{ $player->name }}</td>
-                                                <td>{{ $player->team->name }}</td>
+                                                {{-- <td>{{ $player->team->name }}</td> --}}
 
                                                 <td>
                                                     <div class="row">
